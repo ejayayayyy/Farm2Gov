@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function CreateAccount() {
   return (
@@ -11,7 +12,12 @@ export default function CreateAccount() {
         {/* logo */}
         <div className="flex flex-col gap-4 items-center">
           <div className="flex flex-col gap-2 items-center">
-            <div className="p-8 h-20 w-20 bg-red-500"></div>
+            <Image
+              src="/images/farm2gov.png"
+              alt="Farm2Gov Logo"
+              height={80}
+              width={80}
+            />
           </div>
           <div className="flex items-center text-2xl justify-center font-medium">
             Create your account
@@ -37,7 +43,13 @@ export default function CreateAccount() {
                   </select>
                 </div>
                 <div className="flex flex-1 flex-col gap-2">
-                  <input type="text" name="" id=""  className="px-4 py-2 rounded-lg outline-none border border-gray-300" placeholder="Enter role details"/>
+                  <input
+                    type="text"
+                    name=""
+                    id=""
+                    className="px-4 py-2 rounded-lg outline-none border border-gray-300"
+                    placeholder="Enter role details"
+                  />
                 </div>
               </div>
             </div>
@@ -110,7 +122,7 @@ export default function CreateAccount() {
             <div className="flex flex-col gap-2">
               <button
                 type="submit"
-                className="px-4 py-2 rounded-lg bg-green-500 text-white hover:bg-green-600 transition-colors duration-150"
+                className="px-4 py-2 rounded-lg bg-green-500 text-white hover:bg-green-600 transition-colors duration-150 cursor-pointer"
               >
                 Create account
               </button>

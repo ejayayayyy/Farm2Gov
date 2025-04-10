@@ -16,7 +16,7 @@ const ProfileSettings = () => {
     // Check if we're in the browser environment
     if (typeof window !== "undefined") {
       try {
-        const storedRole = localStorage.getItem("userRole")
+        const storedRole = localStorage.getItem("role")
         console.log("Retrieved role from localStorage:", storedRole)
 
         if (storedRole) {
@@ -972,6 +972,8 @@ const ProfileSettings = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
+      {/* Debug indicator - remove in production */}
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Profile Settings</h1>

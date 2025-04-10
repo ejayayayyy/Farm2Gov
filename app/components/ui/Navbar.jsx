@@ -64,8 +64,8 @@ export default function Navbar() {
         <Image
         src="/images/farm2gov.png"
         alt="Farm2Gov Logo"
-        height={120}
-        width={120}
+        height={100}
+        width={100}
         />
 
         <h1 className="text-2xl font-medium">Farm2Gov</h1>

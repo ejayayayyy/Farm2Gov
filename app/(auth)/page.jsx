@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 
 const users = [
   { email: "farmer@example.com", password: "farmerpass", role: "farmer" },
@@ -45,7 +46,12 @@ export default function SignIn() {
         {/* logo */}
         <div className="flex flex-col gap-4 items-center">
           <div className="flex flex-col gap-2 items-center">
-            <div className="p-8 h-20 w-20 bg-red-500"></div>
+            <Image 
+            src="/images/farm2gov.png"
+            alt="Farm2Gov Logo"
+            height={80}
+            width={80}
+            />
           </div>
           <div className="flex items-center text-2xl justify-center font-medium">
             Welcome to Farm2Gov
@@ -89,7 +95,7 @@ export default function SignIn() {
 
           <button
             type="submit"
-            className="px-4 py-2 rounded-lg bg-green-500 text-white hover:bg-green-600 transition-colors duration-150"
+            className="px-4 py-2 rounded-lg bg-green-500 text-white hover:bg-green-600 transition-colors duration-150 cursor-pointer"
           >
             Sign in
           </button>

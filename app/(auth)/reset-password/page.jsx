@@ -1,17 +1,23 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function ResetPassword() {
   return (
     <div
-    className="min-h-screen flex items-center justify-center bg-cover bg-center relative"
-    style={{ backgroundImage: "url('/images/background.png')" }}
-  >
+      className="min-h-screen flex items-center justify-center bg-cover bg-center relative"
+      style={{ backgroundImage: "url('/images/background.png')" }}
+    >
       {" "}
       <div className="flex flex-col bg-white rounded-xl p-10 shadow w-full max-w-md gap-8">
         {/* logo */}
         <div className="flex flex-col gap-4 items-center">
           <div className="flex flex-col gap-2 items-center">
-            <div className="p-8 h-20 w-20 bg-red-500"></div>
+            <Image
+              src="/images/farm2gov.png"
+              alt="Farm2Gov Logo"
+              height={80}
+              width={80}
+            />
           </div>
           <div className="flex items-center text-2xl justify-center font-medium">
             Reset password

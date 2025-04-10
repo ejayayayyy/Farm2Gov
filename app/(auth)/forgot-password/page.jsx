@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function ForgotPassword() {
   return (
@@ -11,7 +12,12 @@ export default function ForgotPassword() {
         {/* logo */}
         <div className="flex flex-col gap-4 items-center">
           <div className="flex flex-col gap-2 items-center">
-            <div className="p-8 h-20 w-20 bg-red-500"></div>
+            <Image
+              src="/images/farm2gov.png"
+              alt="Farm2Gov Logo"
+              height={80}
+              width={80}
+            />
           </div>
           <div className="flex items-center text-2xl justify-center font-medium">
             Forgot password
