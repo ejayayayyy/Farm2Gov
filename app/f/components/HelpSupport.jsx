@@ -1,26 +1,27 @@
-"use client";
+"use client"
 
-import { useState } from "react";
+import { useState } from "react"
 import {
   Search,
   Phone,
   Mail,
   MessageSquare,
   ChevronDown,
-  ChevronUp,
+  ChevronRight,
   FileText,
   ShoppingCart,
   HelpCircle,
   ExternalLink,
   Check,
   ArrowRight,
-} from "lucide-react";
+  Filter,
+} from "lucide-react"
 
 export default function HelpSupport() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [activeTab, setActiveTab] = useState("faqs");
-  const [expandedFaq, setExpandedFaq] = useState(null);
-  const [expandedGuide, setExpandedGuide] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("")
+  const [activeTab, setActiveTab] = useState("faqs")
+  const [expandedFaq, setExpandedFaq] = useState(null)
+  const [expandedGuide, setExpandedGuide] = useState(null)
 
   // FAQ data
   const faqs = [
@@ -68,8 +69,7 @@ export default function HelpSupport() {
     },
     {
       id: 7,
-      question:
-        "How does the Sagip Saka Act affect transactions on this platform?",
+      question: "How does the Sagip Saka Act affect transactions on this platform?",
       answer:
         "The Sagip Saka Act (Republic Act 11321) provides tax incentives for direct purchases from farmers. Transactions on our platform are compliant with this law, ensuring government buyers receive the applicable tax benefits. The platform automatically generates the necessary documentation for tax reporting purposes.",
       category: "policy",
@@ -81,15 +81,14 @@ export default function HelpSupport() {
         "For technical issues, we offer 24/7 support through chat, email, and phone during business hours (8AM-5PM, Monday-Friday). For urgent matters, use the emergency support line. Our technical team typically responds within 1 hour during business hours and within 4 hours outside business hours.",
       category: "support",
     },
-  ];
+  ]
 
   // Farmer guides
   const farmerGuides = [
     {
       id: 1,
       title: "Creating Your Product Listings",
-      description:
-        "Learn how to create effective product listings that attract government buyers",
+      description: "Learn how to create effective product listings that attract government buyers",
       steps: [
         "Log in to your farmer dashboard",
         "Navigate to 'My Products' and click 'Add New Product'",
@@ -110,8 +109,7 @@ export default function HelpSupport() {
     {
       id: 2,
       title: "Managing Orders and Deliveries",
-      description:
-        "Step-by-step guide to handling orders from acceptance to delivery",
+      description: "Step-by-step guide to handling orders from acceptance to delivery",
       steps: [
         "Review new orders in your 'Orders' dashboard",
         "Accept or request modifications within 24 hours",
@@ -132,8 +130,7 @@ export default function HelpSupport() {
     {
       id: 3,
       title: "Best Practices for Successful Sales",
-      description:
-        "Tips and strategies to maximize your success on the platform",
+      description: "Tips and strategies to maximize your success on the platform",
       steps: [
         "Maintain consistent product quality and accurate descriptions",
         "Price your products competitively based on market rates",
@@ -151,15 +148,14 @@ export default function HelpSupport() {
       ],
       icon: Check,
     },
-  ];
+  ]
 
   // Buyer guides
   const buyerGuides = [
     {
       id: 1,
       title: "Government Procurement Process",
-      description:
-        "Understanding the streamlined procurement process through our platform",
+      description: "Understanding the streamlined procurement process through our platform",
       steps: [
         "Log in to your government buyer account",
         "Browse available products or search for specific items",
@@ -202,8 +198,7 @@ export default function HelpSupport() {
     {
       id: 3,
       title: "Maximizing Value in Government Procurement",
-      description:
-        "Strategies for effective and efficient agricultural procurement",
+      description: "Strategies for effective and efficient agricultural procurement",
       steps: [
         "Utilize the seasonal forecast tool for procurement planning",
         "Engage with multiple farmers to compare quality and pricing",
@@ -221,484 +216,455 @@ export default function HelpSupport() {
       ],
       icon: Check,
     },
-  ];
+  ]
 
   // Filter FAQs based on search query
   const filteredFaqs = searchQuery
     ? faqs.filter(
         (faq) =>
           faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
+          faq.answer.toLowerCase().includes(searchQuery.toLowerCase()),
       )
-    : faqs;
+    : faqs
 
   // Toggle FAQ expansion
   const toggleFaq = (id) => {
-    setExpandedFaq(expandedFaq === id ? null : id);
-  };
+    setExpandedFaq(expandedFaq === id ? null : id)
+  }
 
   // Toggle guide expansion
   const toggleGuide = (id) => {
-    setExpandedGuide(expandedGuide === id ? null : id);
-  };
+    setExpandedGuide(expandedGuide === id ? null : id)
+  }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="text-center mb-10">
-        <h1 className="text-3xl font-bold text-gray-900">
-          Help & Support Center
-        </h1>
-        <p className="text-gray-600 mt-2 max-w-2xl mx-auto">
-          Find answers to common questions, learn how to use the platform, or
-          contact our support team for assistance.
-        </p>
-        <div className="mt-6 max-w-xl mx-auto relative">
-          <Search
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-            size={20}
-          />
-          <input
-            type="text"
-            placeholder="Search for help topics..."
-            className="w-full pl-10 pr-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
+    <div className="flex-1 bg-gray-50">
+      {/* Header */}
+      <div className="">
+        <div className="mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Help & Support Center</h1>
+              <p className="mt-1 text-sm text-gray-500">
+                Find answers to common questions, learn how to use the platform, or contact our support team for
+                assistance.
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                <input
+                  type="text"
+                  placeholder="Search help topics..."
+                  className="pl-10 w-full md:w-64 h-10 rounded-lg border bg-white border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <button className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors shadow-sm">
+                <Filter size={16} />
+                Filter
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Navigation Tabs */}
-      <div className="flex flex-wrap border-b border-gray-200 mb-8">
-        <button
-          className={`px-4 py-2 font-medium text-sm mr-4 ${
-            activeTab === "faqs"
-              ? "text-green-600 border-b-2 border-green-600"
-              : "text-gray-500 hover:text-gray-700"
-          }`}
-          onClick={() => setActiveTab("faqs")}
-        >
-          Frequently Asked Questions
-        </button>
-        <button
-          className={`px-4 py-2 font-medium text-sm mr-4 ${
-            activeTab === "contact"
-              ? "text-green-600 border-b-2 border-green-600"
-              : "text-gray-500 hover:text-gray-700"
-          }`}
-          onClick={() => setActiveTab("contact")}
-        >
-          Contact Support
-        </button>
-        <button
-          className={`px-4 py-2 font-medium text-sm mr-4 ${
-            activeTab === "farmers"
-              ? "text-green-600 border-b-2 border-green-600"
-              : "text-gray-500 hover:text-gray-700"
-          }`}
-          onClick={() => setActiveTab("farmers")}
-        >
-          Guide for Farmers
-        </button>
-        <button
-          className={`px-4 py-2 font-medium text-sm ${
-            activeTab === "buyers"
-              ? "text-green-600 border-b-2 border-green-600"
-              : "text-gray-500 hover:text-gray-700"
-          }`}
-          onClick={() => setActiveTab("buyers")}
-        >
-          Guide for Buyers
-        </button>
-      </div>
-
-      {/* FAQs Tab */}
-      {activeTab === "faqs" && (
-        <div className="max-w-3xl mx-auto">
-          <h2 className="text-2xl font-bold mb-6">
-            Frequently Asked Questions
-          </h2>
-
-          {filteredFaqs.length === 0 ? (
-            <div className="text-center py-10">
-              <HelpCircle size={48} className="mx-auto text-gray-400 mb-4" />
-              <p className="text-gray-500 mb-4">
-                No FAQs found matching your search criteria.
-              </p>
-              <button
-                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
-                onClick={() => setSearchQuery("")}
-              >
-                Clear search
-              </button>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {filteredFaqs.map((faq) => (
-                <div
-                  key={faq.id}
-                  className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-md transition-shadow"
-                >
-                  <button
-                    className="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none"
-                    onClick={() => toggleFaq(faq.id)}
-                  >
-                    <span className="font-medium text-gray-900">
-                      {faq.question}
-                    </span>
-                    {expandedFaq === faq.id ? (
-                      <ChevronUp className="text-gray-500" size={20} />
-                    ) : (
-                      <ChevronDown className="text-gray-500" size={20} />
-                    )}
-                  </button>
-                  {expandedFaq === faq.id && (
-                    <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-                      <p className="text-gray-700">{faq.answer}</p>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-
-          <div className="mt-10 bg-green-50 rounded-lg p-6">
-            <h3 className="text-lg font-medium text-green-800 mb-2">
-              Can't find what you're looking for?
-            </h3>
-            <p className="text-green-700 mb-4">
-              Our support team is ready to assist you with any questions or
-              issues you may have.
-            </p>
+      {/* Main Content */}
+      <div className="max-w-l mx-auto px-4 sm:px-6 lg:px-8 pb-6">
+        {/* Navigation Tabs */}
+        <div className="bg-white rounded-xl shadow-sm mb-6">
+          <div className="flex overflow-x-auto">
             <button
-              className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors flex items-center"
-              onClick={() => setActiveTab("contact")}
+              onClick={() => setActiveTab("faqs")}
+              className={`py-4 px-6 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === "faqs"
+                  ? "border-green-500 text-green-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              }`}
             >
-              Contact Support <ArrowRight size={16} className="ml-2" />
+              Frequently Asked Questions
+            </button>
+            <button
+              onClick={() => setActiveTab("contact")}
+              className={`py-4 px-6 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === "contact"
+                  ? "border-green-500 text-green-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              }`}
+            >
+              Contact Support
+            </button>
+            <button
+              onClick={() => setActiveTab("farmers")}
+              className={`py-4 px-6 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === "farmers"
+                  ? "border-green-500 text-green-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              }`}
+            >
+              Guide for Farmers
+            </button>
+            <button
+              onClick={() => setActiveTab("buyers")}
+              className={`py-4 px-6 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === "buyers"
+                  ? "border-green-500 text-green-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              }`}
+            >
+              Guide for Buyers
             </button>
           </div>
         </div>
-      )}
 
-      {/* Contact Support Tab */}
-      {activeTab === "contact" && (
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold mb-6">Contact Our Support Team</h2>
-          <p className="text-gray-600 mb-8">
-            Our dedicated support team is available to assist you with any
-            questions or issues you may encounter while using our platform.
-          </p>
+        {/* FAQs Tab */}
+        {activeTab === "faqs" && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <h2 className="text-xl font-bold mb-6">Frequently Asked Questions</h2>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                <MessageSquare className="text-green-600" size={24} />
-              </div>
-              <h3 className="text-lg font-medium mb-2">Live Chat</h3>
-              <p className="text-gray-600 mb-4">
-                Chat with our support team in real-time for immediate assistance
-                with your questions.
-              </p>
-              <p className="text-sm text-gray-500 mb-2">Available Hours:</p>
-              <p className="text-sm text-gray-500 mb-4">
-                Monday-Friday: 8AM - 8PM
-              </p>
-              <button className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
-                Start Chat
-              </button>
+              {filteredFaqs.length === 0 ? (
+                <div className="text-center py-10">
+                  <HelpCircle size={48} className="mx-auto text-gray-400 mb-4" />
+                  <p className="text-gray-500 mb-4">No FAQs found matching your search criteria.</p>
+                  <button
+                    className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                    onClick={() => setSearchQuery("")}
+                  >
+                    Clear search
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  {filteredFaqs.map((faq) => (
+                    <div
+                      key={faq.id}
+                      className="border border-gray-200 rounded-lg overflow-hidden hover:shadow-sm transition-shadow"
+                    >
+                      <button
+                        className="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none"
+                        onClick={() => toggleFaq(faq.id)}
+                      >
+                        <span className="font-medium text-gray-900">{faq.question}</span>
+                        {expandedFaq === faq.id ? (
+                          <ChevronDown className="text-gray-500 flex-shrink-0" size={20} />
+                        ) : (
+                          <ChevronRight className="text-gray-500 flex-shrink-0" size={20} />
+                        )}
+                      </button>
+                      {expandedFaq === faq.id && (
+                        <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
+                          <p className="text-gray-700">{faq.answer}</p>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                <Mail className="text-green-600" size={24} />
-              </div>
-              <h3 className="text-lg font-medium mb-2">Email Support</h3>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Can't find what you're looking for?</h3>
               <p className="text-gray-600 mb-4">
-                Send us an email with your questions or issues, and we'll
-                respond within 24 hours.
+                Our support team is ready to assist you with any questions or issues you may have.
               </p>
-              <p className="text-sm text-gray-500 mb-2">Email Address:</p>
-              <p className="text-sm text-gray-500 mb-4">
-                support@sagipsaka.gov.ph
-              </p>
-              <button className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
-                Send Email
-              </button>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200 hover:shadow-md transition-shadow">
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
-                <Phone className="text-green-600" size={24} />
-              </div>
-              <h3 className="text-lg font-medium mb-2">Phone Support</h3>
-              <p className="text-gray-600 mb-4">
-                Call our support hotline for direct assistance with urgent
-                matters or complex issues.
-              </p>
-              <p className="text-sm text-gray-500 mb-2">Phone Number:</p>
-              <p className="text-sm text-gray-500 mb-4">(02) 8888-1234</p>
-              <button className="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors">
-                Call Now
+              <button
+                className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center"
+                onClick={() => setActiveTab("contact")}
+              >
+                Contact Support <ArrowRight size={16} className="ml-2" />
               </button>
             </div>
           </div>
+        )}
 
-          <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-200">
-            <h3 className="text-xl font-medium mb-4">Send Us a Message</h3>
-            <form className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Contact Support Tab */}
+        {activeTab === "contact" && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <h2 className="text-xl font-bold mb-4">Contact Our Support Team</h2>
+              <p className="text-gray-600 mb-6">
+                Our dedicated support team is available to assist you with any questions or issues you may encounter
+                while using our platform.
+              </p>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 hover:shadow-sm transition-shadow">
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                    <MessageSquare className="text-green-500" size={24} />
+                  </div>
+                  <h3 className="text-lg font-medium mb-2">Live Chat</h3>
+                  <p className="text-gray-600 mb-4">
+                    Chat with our support team in real-time for immediate assistance with your questions.
+                  </p>
+                  <p className="text-sm text-gray-500 mb-2">Available Hours:</p>
+                  <p className="text-sm text-gray-500 mb-4">Monday-Friday: 8AM - 8PM</p>
+                  <button className="w-full px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
+                    Start Chat
+                  </button>
+                </div>
+
+                <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 hover:shadow-sm transition-shadow">
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                    <Mail className="text-green-500" size={24} />
+                  </div>
+                  <h3 className="text-lg font-medium mb-2">Email Support</h3>
+                  <p className="text-gray-600 mb-4">
+                    Send us an email with your questions or issues, and we'll respond within 24 hours.
+                  </p>
+                  <p className="text-sm text-gray-500 mb-2">Email Address:</p>
+                  <p className="text-sm text-gray-500 mb-4">support@sagipsaka.gov.ph</p>
+                  <button className="w-full px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
+                    Send Email
+                  </button>
+                </div>
+
+                <div className="bg-gray-50 rounded-xl p-6 border border-gray-200 hover:shadow-sm transition-shadow">
+                  <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-4">
+                    <Phone className="text-green-500" size={24} />
+                  </div>
+                  <h3 className="text-lg font-medium mb-2">Phone Support</h3>
+                  <p className="text-gray-600 mb-4">
+                    Call our support hotline for direct assistance with urgent matters or complex issues.
+                  </p>
+                  <p className="text-sm text-gray-500 mb-2">Phone Number:</p>
+                  <p className="text-sm text-gray-500 mb-4">(02) 8888-1234</p>
+                  <button className="w-full px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
+                    Call Now
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <h3 className="text-xl font-medium mb-4">Send Us a Message</h3>
+              <form className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                      Your Name
+                    </label>
+                    <input
+                      type="text"
+                      id="name"
+                      className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm"
+                      placeholder="Enter your full name"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                      Email Address
+                    </label>
+                    <input
+                      type="email"
+                      id="email"
+                      className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm"
+                      placeholder="Enter your email address"
+                    />
+                  </div>
+                </div>
                 <div>
-                  <label
-                    htmlFor="name"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Your Name
+                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
+                    Subject
                   </label>
                   <input
                     type="text"
-                    id="name"
-                    className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    placeholder="Enter your full name"
+                    id="subject"
+                    className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm"
+                    placeholder="What is your message about?"
                   />
                 </div>
                 <div>
-                  <label
-                    htmlFor="email"
-                    className="block text-sm font-medium text-gray-700 mb-1"
-                  >
-                    Email Address
+                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                    Message
                   </label>
-                  <input
-                    type="email"
-                    id="email"
-                    className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    placeholder="Enter your email address"
-                  />
+                  <textarea
+                    id="message"
+                    rows={5}
+                    className="w-full px-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm"
+                    placeholder="Please describe your issue or question in detail"
+                  ></textarea>
                 </div>
+                <div>
+                  <button
+                    type="submit"
+                    className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
+                  >
+                    Submit Message
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Guide for Farmers Tab */}
+        {activeTab === "farmers" && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <h2 className="text-xl font-bold mb-4">Guide for Farmers</h2>
+              <p className="text-gray-600 mb-6">
+                Learn how to effectively use our platform to list your products, manage orders, and maximize your sales
+                to government institutions.
+              </p>
+
+              <div className="space-y-4">
+                {farmerGuides.map((guide) => (
+                  <div
+                    key={guide.id}
+                    className="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden hover:shadow-sm transition-shadow"
+                  >
+                    <div
+                      className="px-6 py-4 cursor-pointer flex justify-between items-center"
+                      onClick={() => toggleGuide(guide.id)}
+                    >
+                      <div className="flex items-center">
+                        <guide.icon className="text-green-500 mr-3 flex-shrink-0" size={24} />
+                        <div>
+                          <h3 className="font-medium text-lg">{guide.title}</h3>
+                          <p className="text-gray-600 text-sm">{guide.description}</p>
+                        </div>
+                      </div>
+                      {expandedGuide === guide.id ? (
+                        <ChevronDown className="text-gray-500 flex-shrink-0" size={20} />
+                      ) : (
+                        <ChevronRight className="text-gray-500 flex-shrink-0" size={20} />
+                      )}
+                    </div>
+                    {expandedGuide === guide.id && (
+                      <div className="px-6 py-4 bg-white border-t border-gray-200">
+                        <div className="mb-4">
+                          <h4 className="font-medium text-gray-900 mb-2">Step-by-Step Guide:</h4>
+                          <ol className="list-decimal pl-5 space-y-2">
+                            {guide.steps.map((step, index) => (
+                              <li key={index} className="text-gray-700">
+                                {step}
+                              </li>
+                            ))}
+                          </ol>
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-gray-900 mb-2">Pro Tips:</h4>
+                          <ul className="list-disc pl-5 space-y-2">
+                            {guide.tips.map((tip, index) => (
+                              <li key={index} className="text-gray-700">
+                                {tip}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
               </div>
-              <div>
-                <label
-                  htmlFor="subject"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Subject
-                </label>
-                <input
-                  type="text"
-                  id="subject"
-                  className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  placeholder="What is your message about?"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="message"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Message
-                </label>
-                <textarea
-                  id="message"
-                  rows={5}
-                  className="w-full px-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                  placeholder="Please describe your issue or question in detail"
-                ></textarea>
-              </div>
-              <div>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Need additional assistance?</h3>
+              <p className="text-gray-600 mb-4">
+                Our farmer support specialists are available to provide personalized guidance for your specific needs.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center">
+                  Schedule a Training Session <ExternalLink size={16} className="ml-2" />
+                </button>
                 <button
-                  type="submit"
-                  className="px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+                  className="px-4 py-2 border border-green-500 text-green-500 rounded-lg hover:bg-green-50 transition-colors flex items-center"
+                  onClick={() => setActiveTab("contact")}
                 >
-                  Submit Message
+                  Contact Farmer Support <ArrowRight size={16} className="ml-2" />
                 </button>
               </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* Guide for Farmers Tab */}
-      {activeTab === "farmers" && (
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold mb-6">Guide for Farmers</h2>
-          <p className="text-gray-600 mb-8">
-            Learn how to effectively use our platform to list your products,
-            manage orders, and maximize your sales to government institutions.
-          </p>
-
-          <div className="space-y-6">
-            {farmerGuides.map((guide) => (
-              <div
-                key={guide.id}
-                className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
-              >
-                <div
-                  className="px-6 py-4 cursor-pointer flex justify-between items-center"
-                  onClick={() => toggleGuide(guide.id)}
-                >
-                  <div className="flex items-center">
-                    <guide.icon className="text-green-600 mr-3" size={24} />
-                    <div>
-                      <h3 className="font-medium text-lg">{guide.title}</h3>
-                      <p className="text-gray-600 text-sm">
-                        {guide.description}
-                      </p>
-                    </div>
-                  </div>
-                  {expandedGuide === guide.id ? (
-                    <ChevronUp className="text-gray-500" size={20} />
-                  ) : (
-                    <ChevronDown className="text-gray-500" size={20} />
-                  )}
-                </div>
-                {expandedGuide === guide.id && (
-                  <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-                    <div className="mb-4">
-                      <h4 className="font-medium text-gray-900 mb-2">
-                        Step-by-Step Guide:
-                      </h4>
-                      <ol className="list-decimal pl-5 space-y-2">
-                        {guide.steps.map((step, index) => (
-                          <li key={index} className="text-gray-700">
-                            {step}
-                          </li>
-                        ))}
-                      </ol>
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-gray-900 mb-2">
-                        Pro Tips:
-                      </h4>
-                      <ul className="list-disc pl-5 space-y-2">
-                        {guide.tips.map((tip, index) => (
-                          <li key={index} className="text-gray-700">
-                            {tip}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-10 bg-green-50 rounded-lg p-6">
-            <h3 className="text-lg font-medium text-green-800 mb-2">
-              Need additional assistance?
-            </h3>
-            <p className="text-green-700 mb-4">
-              Our farmer support specialists are available to provide
-              personalized guidance for your specific needs.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <button className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors flex items-center">
-                Schedule a Training Session{" "}
-                <ExternalLink size={16} className="ml-2" />
-              </button>
-              <button
-                className="px-4 py-2 border border-green-600 text-green-600 rounded-md hover:bg-green-50 transition-colors flex items-center"
-                onClick={() => setActiveTab("contact")}
-              >
-                Contact Farmer Support <ArrowRight size={16} className="ml-2" />
-              </button>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Guide for Buyers Tab */}
-      {activeTab === "buyers" && (
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-2xl font-bold mb-6">
-            Guide for Government Buyers
-          </h2>
-          <p className="text-gray-600 mb-8">
-            Learn how to navigate the procurement process, make payments, and
-            maximize the value of your agricultural purchases through our
-            platform.
-          </p>
-
+        {/* Guide for Buyers Tab */}
+        {activeTab === "buyers" && (
           <div className="space-y-6">
-            {buyerGuides.map((guide) => (
-              <div
-                key={guide.id}
-                className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
-              >
-                <div
-                  className="px-6 py-4 cursor-pointer flex justify-between items-center"
-                  onClick={() => toggleGuide(guide.id)}
-                >
-                  <div className="flex items-center">
-                    <guide.icon className="text-green-600 mr-3" size={24} />
-                    <div>
-                      <h3 className="font-medium text-lg">{guide.title}</h3>
-                      <p className="text-gray-600 text-sm">
-                        {guide.description}
-                      </p>
-                    </div>
-                  </div>
-                  {expandedGuide === guide.id ? (
-                    <ChevronUp className="text-gray-500" size={20} />
-                  ) : (
-                    <ChevronDown className="text-gray-500" size={20} />
-                  )}
-                </div>
-                {expandedGuide === guide.id && (
-                  <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-                    <div className="mb-4">
-                      <h4 className="font-medium text-gray-900 mb-2">
-                        Step-by-Step Guide:
-                      </h4>
-                      <ol className="list-decimal pl-5 space-y-2">
-                        {guide.steps.map((step, index) => (
-                          <li key={index} className="text-gray-700">
-                            {step}
-                          </li>
-                        ))}
-                      </ol>
-                    </div>
-                    <div>
-                      <h4 className="font-medium text-gray-900 mb-2">
-                        Pro Tips:
-                      </h4>
-                      <ul className="list-disc pl-5 space-y-2">
-                        {guide.tips.map((tip, index) => (
-                          <li key={index} className="text-gray-700">
-                            {tip}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <h2 className="text-xl font-bold mb-4">Guide for Government Buyers</h2>
+              <p className="text-gray-600 mb-6">
+                Learn how to navigate the procurement process, make payments, and maximize the value of your
+                agricultural purchases through our platform.
+              </p>
 
-          <div className="mt-10 bg-green-50 rounded-lg p-6">
-            <h3 className="text-lg font-medium text-green-800 mb-2">
-              Need specialized procurement assistance?
-            </h3>
-            <p className="text-green-700 mb-4">
-              Our government procurement specialists can help you optimize your
-              agricultural purchasing strategy and ensure compliance with all
-              regulations.
-            </p>
-            <div className="flex flex-wrap gap-4">
-              <button className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors flex items-center">
-                Request Procurement Consultation{" "}
-                <ExternalLink size={16} className="ml-2" />
-              </button>
-              <button
-                className="px-4 py-2 border border-green-600 text-green-600 rounded-md hover:bg-green-50 transition-colors flex items-center"
-                onClick={() => setActiveTab("contact")}
-              >
-                Contact Buyer Support <ArrowRight size={16} className="ml-2" />
-              </button>
+              <div className="space-y-4">
+                {buyerGuides.map((guide) => (
+                  <div
+                    key={guide.id}
+                    className="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden hover:shadow-sm transition-shadow"
+                  >
+                    <div
+                      className="px-6 py-4 cursor-pointer flex justify-between items-center"
+                      onClick={() => toggleGuide(guide.id)}
+                    >
+                      <div className="flex items-center">
+                        <guide.icon className="text-green-500 mr-3 flex-shrink-0" size={24} />
+                        <div>
+                          <h3 className="font-medium text-lg">{guide.title}</h3>
+                          <p className="text-gray-600 text-sm">{guide.description}</p>
+                        </div>
+                      </div>
+                      {expandedGuide === guide.id ? (
+                        <ChevronDown className="text-gray-500 flex-shrink-0" size={20} />
+                      ) : (
+                        <ChevronRight className="text-gray-500 flex-shrink-0" size={20} />
+                      )}
+                    </div>
+                    {expandedGuide === guide.id && (
+                      <div className="px-6 py-4 bg-white border-t border-gray-200">
+                        <div className="mb-4">
+                          <h4 className="font-medium text-gray-900 mb-2">Step-by-Step Guide:</h4>
+                          <ol className="list-decimal pl-5 space-y-2">
+                            {guide.steps.map((step, index) => (
+                              <li key={index} className="text-gray-700">
+                                {step}
+                              </li>
+                            ))}
+                          </ol>
+                        </div>
+                        <div>
+                          <h4 className="font-medium text-gray-900 mb-2">Pro Tips:</h4>
+                          <ul className="list-disc pl-5 space-y-2">
+                            {guide.tips.map((tip, index) => (
+                              <li key={index} className="text-gray-700">
+                                {tip}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+              <h3 className="text-lg font-medium text-gray-900 mb-2">Need specialized procurement assistance?</h3>
+              <p className="text-gray-600 mb-4">
+                Our government procurement specialists can help you optimize your agricultural purchasing strategy and
+                ensure specialists can help you optimize your agricultural purchasing strategy and ensure compliance
+                with all regulations.
+              </p>
+              <div className="flex flex-wrap gap-4">
+                <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center">
+                  Request Procurement Consultation <ExternalLink size={16} className="ml-2" />
+                </button>
+                <button
+                  className="px-4 py-2 border border-green-500 text-green-500 rounded-lg hover:bg-green-50 transition-colors flex items-center"
+                  onClick={() => setActiveTab("contact")}
+                >
+                  Contact Buyer Support <ArrowRight size={16} className="ml-2" />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
-  );
+  )
 }

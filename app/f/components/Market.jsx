@@ -262,7 +262,7 @@ export default function MarketPage() {
 
                 {/* Search and Filter */}
                 <div className="">
-                  <div className="flex flex-col sm:flex-row gap-4 justify-between">
+                  <div className="flex flex-col sm:flex-row gap-4 justify-between bg-white p-4 shadow-sm rounded-xl">
                     <div className="relative flex-1 max-w-md">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <Search className="h-5 w-5 text-gray-400" />
@@ -613,8 +613,8 @@ export default function MarketPage() {
                     units="30 units"
                     image="/images/bowl-of-steamed-rice.png"
                   />
-                  <TopSellingItem name="Fresh Tomatoes" sales="₱22,500" units="300 kg" image="/ripe-red-tomatoes.png" />
-                  <TopSellingItem name="Red Apples" sales="₱18,000" units="150 kg" image="/red-apples-basket.png" />
+                  <TopSellingItem name="Fresh Tomatoes" sales="₱22,500" units="300 kg" image="/images/ripe-red-tomatoes.png" />
+                  <TopSellingItem name="Red Apples" sales="₱18,000" units="150 kg" image="/images/red-apples-basket.png" />
                 </div>
               </div>
               <div className="px-5 py-3 border-t border-gray-100">
