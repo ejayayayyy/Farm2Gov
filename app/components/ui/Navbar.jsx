@@ -58,7 +58,7 @@ export default function Navbar() {
   };
 
   return (
-    <aside className="w-80 bg-white shadow h-screen sticky top-0 left-0 p-8 flex flex-col gap-8">
+    <aside className="w-80 bg-gray-800 shadow h-screen sticky top-0 left-0 p-8 flex flex-col gap-8">
       {/* Logo Section */}
       <div className="flex flex-col items-center justify-center gap-2">
         <Image
@@ -68,7 +68,7 @@ export default function Navbar() {
         width={100}
         />
 
-        <h1 className="text-2xl font-medium">Farm2Gov</h1>
+        <h1 className="text-2xl font-medium text-white">Farm2Gov</h1>
       </div>
 
       {/* Navigation Menu */}
@@ -83,7 +83,7 @@ export default function Navbar() {
               className={`px-4 py-2 rounded-lg flex items-center gap-3 transition-colors duration-150 ${
                 isActive
                   ? "bg-green-500 text-white hover:bg-green-600"
-                  : "hover:bg-gray-100 text-gray-800"
+                  : "hover:text-green-500 text-gray-300"
               }`}
             >
               <Icon className="w-5 h-5" />
@@ -92,7 +92,7 @@ export default function Navbar() {
           );
         })}
 
-        <hr className="text-gray-300 my-2" />
+        <hr className="text-gray-500 my-2" />
 
         {otherItems.map(({name, icon: Icon, href}) => {
           const isActive = pathname === href;
@@ -104,7 +104,7 @@ export default function Navbar() {
               className={`px-4 py-2 rounded-lg flex items-center gap-3 transition-colors duration-150 ${
                 isActive
                   ? "bg-green-500 text-white hover:bg-green-600"
-                  : "hover:bg-gray-100 text-gray-800"
+                  : "hover:text-green-500 text-gray-300"
               }`}
             >
               <Icon className="w-5 h-5" />
@@ -117,7 +117,7 @@ export default function Navbar() {
         {/* Logout Button */}
         <button
           onClick={handleLogout}
-          className="px-4 py-2 rounded-lg flex items-center gap-3 transition-colors duration-150 hover:bg-red-100 text-red-500 cursor-pointer"
+          className="px-4 py-2 rounded-lg flex items-center gap-3 transition-colors duration-150 text-red-500 hover:text-red-600 cursor-pointer"
         >
           <LogOut className="w-5 h-5" />
           Sign out

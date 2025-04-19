@@ -184,13 +184,13 @@ export default function LogisticsDeliveryPage() {
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-gray-200">
+      <div className="bg-white rounded-xl shadow-sm px-6">
         <nav className="flex -mb-px space-x-8">
           <button
             onClick={() => setActiveTab("deliveries")}
             className={`py-4 px-1 border-b-2 font-medium text-sm ${
               activeTab === "deliveries"
-                ? "border-green-500 text-green-600"
+                ? "border-green-500 text-green-500"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
             }`}
           >
@@ -200,7 +200,7 @@ export default function LogisticsDeliveryPage() {
             onClick={() => setActiveTab("tracking")}
             className={`py-4 px-1 border-b-2 font-medium text-sm ${
               activeTab === "tracking"
-                ? "border-green-500 text-green-600"
+                ? "border-green-500 text-green-500"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
             }`}
           >
@@ -210,7 +210,7 @@ export default function LogisticsDeliveryPage() {
             onClick={() => setActiveTab("partners")}
             className={`py-4 px-1 border-b-2 font-medium text-sm ${
               activeTab === "partners"
-                ? "border-green-500 text-green-600"
+                ? "border-green-500 text-green-500"
                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
             }`}
           >
@@ -223,7 +223,7 @@ export default function LogisticsDeliveryPage() {
       {activeTab === "deliveries" && (
         <div className="space-y-6">
           {/* Filters */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-between">
+          <div className="flex flex-col sm:flex-row gap-4 justify-between bg-white p-4 shadow-sm rounded-xl">
             <div className="relative flex-1 max-w-md">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-gray-400" />
@@ -328,7 +328,7 @@ export default function LogisticsDeliveryPage() {
                       <DeliveryStatusBadge status={delivery.status} />
                       <button
                         onClick={() => setSelectedDelivery(delivery)}
-                        className="px-4 py-2 text-sm font-medium text-green-600 bg-green-50 rounded-md hover:bg-green-100"
+                        className="px-4 py-2 text-sm font-medium text-green-500 bg-green-50 rounded-md hover:bg-green-100"
                       >
                         View Details
                       </button>
@@ -366,7 +366,7 @@ export default function LogisticsDeliveryPage() {
                   <div className="mt-6 flex flex-wrap gap-3 justify-end">
                     {delivery.status === "pending" && (
                       <>
-                        <button className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                        <button className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
                           Confirm Pickup
                         </button>
                         <button className="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
@@ -377,7 +377,7 @@ export default function LogisticsDeliveryPage() {
                     {delivery.status === "in-progress" && (
                       <button
                         onClick={() => setSelectedDelivery(delivery)}
-                        className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                        className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                       >
                         Upload Proof of Delivery
                       </button>
@@ -444,7 +444,7 @@ export default function LogisticsDeliveryPage() {
                 </select>
               </div>
               <div className="flex items-end">
-                <button className="w-full md:w-auto px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                <button className="w-full md:w-auto px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
                   Track Delivery
                 </button>
               </div>
@@ -453,16 +453,16 @@ export default function LogisticsDeliveryPage() {
 
           {/* Recent Deliveries for Tracking */}
           <div className="bg-white rounded-lg shadow">
-            <div className="p-6 border-b">
+            <div className="p-6 border-b border-gray-300">
               <h3 className="text-lg font-medium">Recent Deliveries</h3>
               <p className="text-sm text-gray-500">Track your recent deliveries</p>
             </div>
             <div className="p-6">
               <div className="overflow-x-auto">
-                <table className="w-full border-collapse">
+                <table className="w-full border-collapse ">
                   <thead>
-                    <tr className="text-left border-b">
-                      <th className="p-4 font-medium">Tracking #</th>
+                    <tr className="text-left border-b border-gray-300">
+                      <th className="p-4 font-medium">Tracking No.</th>
                       <th className="p-4 font-medium">Order ID</th>
                       <th className="p-4 font-medium">Destination</th>
                       <th className="p-4 font-medium">Logistics Partner</th>
@@ -472,7 +472,7 @@ export default function LogisticsDeliveryPage() {
                   </thead>
                   <tbody>
                     {deliveries.map((delivery) => (
-                      <tr key={delivery.id} className="border-b hover:bg-gray-50">
+                      <tr key={delivery.id} className="border-b border-gray-300 hover:bg-gray-50">
                         <td className="p-4">{delivery.trackingNumber}</td>
                         <td className="p-4">{delivery.orderId}</td>
                         <td className="p-4">{delivery.destination}</td>
@@ -483,7 +483,7 @@ export default function LogisticsDeliveryPage() {
                         <td className="p-4">
                           <button
                             onClick={() => setSelectedDelivery(delivery)}
-                            className="text-green-600 hover:text-green-800 font-medium text-sm"
+                            className="text-green-500 hover:text-green-600 font-medium text-sm"
                           >
                             View Details
                           </button>
@@ -513,7 +513,7 @@ export default function LogisticsDeliveryPage() {
       {activeTab === "partners" && (
         <div className="space-y-6">
           {/* Partner Search and Add */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-between">
+          <div className="flex flex-col sm:flex-row gap-4 justify-between bg-white p-4 shadow-sm rounded-xl">
             <div className="relative flex-1 max-w-md">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-gray-400" />
@@ -525,7 +525,7 @@ export default function LogisticsDeliveryPage() {
               />
             </div>
 
-            <button className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+            <button className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
               Add New Partner
             </button>
           </div>
@@ -534,7 +534,7 @@ export default function LogisticsDeliveryPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {logisticsPartners.map((partner) => (
               <div key={partner.id} className="bg-white rounded-lg shadow overflow-hidden">
-                <div className="p-6 border-b">
+                <div className="p-6 border-b border-gray-300">
                   <div className="flex items-center gap-4">
                     <img
                       src={partner.logo || "/placeholder.svg"}
@@ -543,7 +543,7 @@ export default function LogisticsDeliveryPage() {
                     />
                     <div>
                       <h3 className="text-lg font-semibold">{partner.name}</h3>
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-600">
                         Active Partner
                       </span>
                     </div>
@@ -583,7 +583,7 @@ export default function LogisticsDeliveryPage() {
                       href={partner.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center text-sm text-green-600 hover:text-green-800"
+                      className="inline-flex items-center text-sm text-green-500 hover:text-green-600"
                     >
                       Visit Website <ExternalLink className="ml-1 h-3 w-3" />
                     </a>
@@ -710,9 +710,9 @@ export default function LogisticsDeliveryPage() {
                         <li key={index} className="relative pl-10">
                           <div className="absolute left-0 top-1 w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
                             {update.status.toLowerCase().includes("delivered") ? (
-                              <CheckCircle className="h-4 w-4 text-green-600" />
+                              <CheckCircle className="h-4 w-4 text-green-500" />
                             ) : (
-                              <Truck className="h-4 w-4 text-green-600" />
+                              <Truck className="h-4 w-4 text-green-500" />
                             )}
                           </div>
                           <div className="bg-white p-3 rounded-md shadow-sm">
@@ -805,14 +805,14 @@ export default function LogisticsDeliveryPage() {
                 {selectedDelivery.status === "in-progress" && proofImages.length > 0 && (
                   <button
                     onClick={uploadProofOfDelivery}
-                    className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                    className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                   >
                     Confirm Delivery
                   </button>
                 )}
 
                 {selectedDelivery.status === "delivered" && (
-                  <button className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                  <button className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-500 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
                     Download Receipt
                   </button>
                 )}
@@ -843,7 +843,7 @@ function DeliveryStatusBadge({ status }) {
       break
     case "delivered":
       bgColor = "bg-green-100"
-      textColor = "text-green-800"
+      textColor = "text-green-600"
       label = "Delivered"
       break
     default:

@@ -124,7 +124,7 @@ export default function OrderManagementPage() {
       </div>
 
       {/* Tabs */}
-      <div className="border-b border-gray-200">
+      <div className=" bg-white rounded-xl shadow-sm px-6">
         <nav className="flex -mb-px space-x-8">
           <button
             onClick={() => setActiveTab("incoming")}
@@ -161,16 +161,16 @@ export default function OrderManagementPage() {
 
       {/* Incoming Orders */}
       {activeTab === "incoming" && (
-        <div className="space-y-6">
+        <div className="space-y-6 ">
           {/* Filters */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-between">
+          <div className="flex flex-col sm:flex-row gap-4 justify-between bg-white p-4 shadow-sm rounded-xl">
             <div className="relative flex-1 max-w-md">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-gray-400" />
               </div>
               <input
                 type="text"
-                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg shadow focus:outline-none focus:ring-green-500 focus:border-green-500"
                 placeholder="Search orders..."
               />
             </div>
@@ -374,7 +374,7 @@ export default function OrderManagementPage() {
       {activeTab === "history" && (
         <div className="space-y-6">
           {/* Filters */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-between">
+          <div className="flex flex-col sm:flex-row gap-4 justify-between bg-white p-4 shadow-sm rounded-xl">
             <div className="relative flex-1 max-w-md">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <Search className="h-5 w-5 text-gray-400" />
@@ -407,47 +407,47 @@ export default function OrderManagementPage() {
           <div className="bg-white rounded-lg shadow overflow-hidden">
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+                <thead className="bg-white">
                   <tr>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-6 py-5 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       Order ID
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-6 py-5 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       Date
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-6 py-5 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       Buyer
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-6 py-5 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       Amount
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-6 py-5 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       Status
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-6 py-5 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       Payment
                     </th>
                     <th
                       scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                      className="px-6 py-5 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
                       Actions
                     </th>
@@ -508,7 +508,8 @@ export default function OrderManagementPage() {
                   <span className="text-gray-500">Pending Payments</span>
                   <span className="font-medium">{orders.filter((o) => o.paymentStatus === "pending").length}</span>
                 </div>
-                <div className="pt-4 border-t">
+
+                <div className="pt-4 border-t border-gray-300">
                   <div className="flex justify-between">
                     <span className="font-medium">Total Revenue</span>
                     <span className="font-bold text-green-600">
@@ -557,7 +558,7 @@ export default function OrderManagementPage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Orders List */}
           <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="p-4 border-b">
+            <div className="p-4 border-b border-gray-300">
               <h3 className="font-medium">Orders</h3>
               <div className="mt-2 relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -570,12 +571,13 @@ export default function OrderManagementPage() {
                 />
               </div>
             </div>
-            <div className="overflow-y-auto h-[600px]">
+
+            <div className="overflow-y-auto h-[600px] ">
               {orders.map((order) => (
                 <button
                   key={order.id}
                   onClick={() => setSelectedOrder(order)}
-                  className={`w-full text-left p-4 border-b hover:bg-gray-50 ${
+                  className={`w-full text-left p-4 border-b border-gray-300 hover:bg-gray-50 ${
                     selectedOrder?.id === order.id ? "bg-green-50" : ""
                   }`}
                 >
@@ -605,7 +607,7 @@ export default function OrderManagementPage() {
           <div className="md:col-span-2 bg-white rounded-lg shadow overflow-hidden flex flex-col h-[600px]">
             {selectedOrder ? (
               <>
-                <div className="p-4 border-b flex justify-between items-center">
+                <div className="p-4 border-b border-gray-300 flex justify-between items-center">
                   <div>
                     <h3 className="font-medium">{selectedOrder.buyer}</h3>
                     <p className="text-sm text-gray-500">Order: {selectedOrder.id}</p>
@@ -643,7 +645,7 @@ export default function OrderManagementPage() {
                 </div>
 
                 {/* Message Input */}
-                <div className="p-4 border-t">
+                <div className="p-4 border-t border-gray-300">
                   <div className="flex space-x-2">
                     <input
                       type="text"
@@ -678,7 +680,7 @@ export default function OrderManagementPage() {
 
       {/* Order Details Modal */}
       {selectedOrder && activeTab !== "communication" && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-150 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
             <div className="p-6 border-b border-gray-200 flex justify-between items-center">
               <h3 className="text-lg font-semibold">Order Details: {selectedOrder.id}</h3>
