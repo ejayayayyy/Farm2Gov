@@ -3,17 +3,25 @@
 import { useState } from "react"
 import {
   AlertCircle,
+  BarChart3,
   Calendar,
   Check,
   ChevronDown,
+  ChevronRight,
+  Clock,
   CreditCard,
+  DollarSign,
   Download,
   Eye,
+  FileText,
   Filter,
+  MessageCircle,
   Package,
   Search,
+  Send,
   ShoppingCart,
   Truck,
+  User,
   X,
 } from "lucide-react"
 
@@ -21,15 +29,15 @@ export default function GovOrderManagementPage() {
   const [activeTab, setActiveTab] = useState("purchase-orders")
   const [selectedOrder, setSelectedOrder] = useState(null)
   const [selectedInvoice, setSelectedInvoice] = useState(null)
-  const [isFilterOpen, setIsFilterOpen] = useState(false)
+  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false)
   const [statusFilter, setStatusFilter] = useState("all")
-  const [dateRange, setDateRange] = useState("all")
-  const [isDateRangeOpen, setIsDateRangeOpen] = useState(false)
+  const [dateFilter, setDateFilter] = useState("month")
   const [isModifyQuantityModalOpen, setIsModifyQuantityModalOpen] = useState(false)
   const [modifiedItems, setModifiedItems] = useState([])
   const [searchQuery, setSearchQuery] = useState("")
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false)
   const [selectedPaymentOrder, setSelectedPaymentOrder] = useState(null)
+  const [messageText, setMessageText] = useState("")
 
   // Sample data for purchase orders
   const purchaseOrders = [
@@ -59,6 +67,13 @@ export default function GovOrderManagementPage() {
       paymentStatus: "unpaid",
       paymentMethod: "bank_transfer",
       trackingUpdates: [],
+      messages: [
+        {
+          sender: "supplier",
+          text: "Hello, I'd like to confirm the delivery date for this order.",
+          time: "2023-10-15 10:30 AM",
+        },
+      ],
     },
     {
       id: "PO-2023-1002",
@@ -93,6 +108,7 @@ export default function GovOrderManagementPage() {
           notes: "Purchase order approved",
         },
       ],
+      messages: [],
     },
     {
       id: "PO-2023-1003",
@@ -140,6 +156,18 @@ export default function GovOrderManagementPage() {
           timestamp: "2023-10-17 11:20 AM",
           user: "Logistics",
           notes: "Order is in transit to delivery address",
+        },
+      ],
+      messages: [
+        {
+          sender: "government",
+          text: "Your order has been shipped and will arrive tomorrow.",
+          time: "2023-10-13 09:15 AM",
+        },
+        {
+          sender: "supplier",
+          text: "Thank you for the update!",
+          time: "2023-10-13 10:30 AM",
         },
       ],
     },
@@ -197,6 +225,18 @@ export default function GovOrderManagementPage() {
           notes: "Order has been delivered",
         },
       ],
+      messages: [
+        {
+          sender: "supplier",
+          text: "The potatoes were excellent quality. Thank you!",
+          time: "2023-10-11 14:20 PM",
+        },
+        {
+          sender: "government",
+          text: "We're glad you're satisfied with your order!",
+          time: "2023-10-11 15:45 PM",
+        },
+      ],
     },
     {
       id: "PO-2023-1005",
@@ -231,6 +271,7 @@ export default function GovOrderManagementPage() {
           notes: "Budget constraints. Please resubmit with reduced quantities.",
         },
       ],
+      messages: [],
     },
   ]
 
@@ -298,18 +339,6 @@ export default function GovOrderManagementPage() {
       return false
     }
 
-    // Filter by date range (simplified for demo)
-    if (dateRange === "this_week") {
-      // In a real app, you would check if the order date is within this week
-      return true
-    } else if (dateRange === "this_month") {
-      // In a real app, you would check if the order date is within this month
-      return true
-    } else if (dateRange === "last_month") {
-      // In a real app, you would check if the order date is within last month
-      return true
-    }
-
     return true
   })
 
@@ -364,1460 +393,1388 @@ export default function GovOrderManagementPage() {
     setSelectedPaymentOrder(null)
   }
 
+  // Handle sending message
+  const handleSendMessage = () => {
+    if (!messageText.trim() || !selectedOrder) return
+
+    // In a real app, you would send this to an API
+    console.log(`Sending message to order ${selectedOrder.id}: ${messageText}`)
+
+    // Clear the input
+    setMessageText("")
+  }
+
   return (
-    <div className="flex-1 p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold tracking-tight">Order Management</h1>
-      </div>
-
-      {/* Tabs */}
-      <div className="border-b border-gray-200">
-        <nav className="flex -mb-px space-x-8">
-          <button
-            onClick={() => setActiveTab("purchase-orders")}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${
-              activeTab === "purchase-orders"
-                ? "border-green-500 text-green-600"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            }`}
-          >
-            Purchase Orders
-          </button>
-          <button
-            onClick={() => setActiveTab("order-tracking")}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${
-              activeTab === "order-tracking"
-                ? "border-green-500 text-green-600"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            }`}
-          >
-            Order Tracking
-          </button>
-          <button
-            onClick={() => setActiveTab("payments-invoicing")}
-            className={`py-4 px-1 border-b-2 font-medium text-sm ${
-              activeTab === "payments-invoicing"
-                ? "border-green-500 text-green-600"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-            }`}
-          >
-            Payments & Invoicing
-          </button>
-        </nav>
-      </div>
-
-      {/* Purchase Orders */}
-      {activeTab === "purchase-orders" && (
-        <div className="space-y-6">
-          {/* Filters */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex flex-col md:flex-row gap-4 justify-between">
-              <div className="relative flex-1">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Search className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
-                  placeholder="Search by PO number, supplier, or department..."
-                />
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                <div className="relative">
-                  <button
-                    onClick={() => setIsFilterOpen(!isFilterOpen)}
-                    className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-                  >
-                    <Filter className="h-4 w-4 text-gray-500" />
-                    <span>Status</span>
-                    <ChevronDown className="h-4 w-4 text-gray-500" />
-                  </button>
-                  {isFilterOpen && (
-                    <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-md shadow-lg z-10">
-                      <div className="py-1">
-                        <button
-                          onClick={() => {
-                            setStatusFilter("all")
-                            setIsFilterOpen(false)
-                          }}
-                          className={`block px-4 py-2 text-sm w-full text-left ${
-                            statusFilter === "all" ? "bg-green-50 text-green-700" : "text-gray-700 hover:bg-gray-100"
-                          }`}
-                        >
-                          All Orders
-                        </button>
-                        <button
-                          onClick={() => {
-                            setStatusFilter("pending_approval")
-                            setIsFilterOpen(false)
-                          }}
-                          className={`block px-4 py-2 text-sm w-full text-left ${
-                            statusFilter === "pending_approval"
-                              ? "bg-green-50 text-green-700"
-                              : "text-gray-700 hover:bg-gray-100"
-                          }`}
-                        >
-                          Pending Approval
-                        </button>
-                        <button
-                          onClick={() => {
-                            setStatusFilter("approved")
-                            setIsFilterOpen(false)
-                          }}
-                          className={`block px-4 py-2 text-sm w-full text-left ${
-                            statusFilter === "approved"
-                              ? "bg-green-50 text-green-700"
-                              : "text-gray-700 hover:bg-gray-100"
-                          }`}
-                        >
-                          Approved
-                        </button>
-                        <button
-                          onClick={() => {
-                            setStatusFilter("in_transit")
-                            setIsFilterOpen(false)
-                          }}
-                          className={`block px-4 py-2 text-sm w-full text-left ${
-                            statusFilter === "in_transit"
-                              ? "bg-green-50 text-green-700"
-                              : "text-gray-700 hover:bg-gray-100"
-                          }`}
-                        >
-                          In Transit
-                        </button>
-                        <button
-                          onClick={() => {
-                            setStatusFilter("delivered")
-                            setIsFilterOpen(false)
-                          }}
-                          className={`block px-4 py-2 text-sm w-full text-left ${
-                            statusFilter === "delivered"
-                              ? "bg-green-50 text-green-700"
-                              : "text-gray-700 hover:bg-gray-100"
-                          }`}
-                        >
-                          Delivered
-                        </button>
-                        <button
-                          onClick={() => {
-                            setStatusFilter("rejected")
-                            setIsFilterOpen(false)
-                          }}
-                          className={`block px-4 py-2 text-sm w-full text-left ${
-                            statusFilter === "rejected"
-                              ? "bg-green-50 text-green-700"
-                              : "text-gray-700 hover:bg-gray-100"
-                          }`}
-                        >
-                          Rejected
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="relative">
-                  <button
-                    onClick={() => setIsDateRangeOpen(!isDateRangeOpen)}
-                    className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
-                  >
-                    <Calendar className="h-4 w-4 text-gray-500" />
-                    <span>Date Range</span>
-                    <ChevronDown className="h-4 w-4 text-gray-500" />
-                  </button>
-                  {isDateRangeOpen && (
-                    <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-md shadow-lg z-10">
-                      <div className="py-1">
-                        <button
-                          onClick={() => {
-                            setDateRange("all")
-                            setIsDateRangeOpen(false)
-                          }}
-                          className={`block px-4 py-2 text-sm w-full text-left ${
-                            dateRange === "all" ? "bg-green-50 text-green-700" : "text-gray-700 hover:bg-gray-100"
-                          }`}
-                        >
-                          All Time
-                        </button>
-                        <button
-                          onClick={() => {
-                            setDateRange("this_week")
-                            setIsDateRangeOpen(false)
-                          }}
-                          className={`block px-4 py-2 text-sm w-full text-left ${
-                            dateRange === "this_week" ? "bg-green-50 text-green-700" : "text-gray-700 hover:bg-gray-100"
-                          }`}
-                        >
-                          This Week
-                        </button>
-                        <button
-                          onClick={() => {
-                            setDateRange("this_month")
-                            setIsDateRangeOpen(false)
-                          }}
-                          className={`block px-4 py-2 text-sm w-full text-left ${
-                            dateRange === "this_month"
-                              ? "bg-green-50 text-green-700"
-                              : "text-gray-700 hover:bg-gray-100"
-                          }`}
-                        >
-                          This Month
-                        </button>
-                        <button
-                          onClick={() => {
-                            setDateRange("last_month")
-                            setIsDateRangeOpen(false)
-                          }}
-                          className={`block px-4 py-2 text-sm w-full text-left ${
-                            dateRange === "last_month"
-                              ? "bg-green-50 text-green-700"
-                              : "text-gray-700 hover:bg-gray-100"
-                          }`}
-                        >
-                          Last Month
-                        </button>
-                        <button
-                          onClick={() => {
-                            setDateRange("custom")
-                            setIsDateRangeOpen(false)
-                          }}
-                          className={`block px-4 py-2 text-sm w-full text-left ${
-                            dateRange === "custom" ? "bg-green-50 text-green-700" : "text-gray-700 hover:bg-gray-100"
-                          }`}
-                        >
-                          Custom Range
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <select className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
-                  <option value="all">All Departments</option>
-                  <option value="education">Department of Education</option>
-                  <option value="health">Department of Health</option>
-                  <option value="social">Department of Social Welfare</option>
-                  <option value="agriculture">Department of Agriculture</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Custom Date Range (if selected) */}
-            {dateRange === "custom" && (
-              <div className="mt-4 pt-4 border-t border-gray-200">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="start-date" className="block text-sm font-medium text-gray-700 mb-1">
-                      Start Date
-                    </label>
-                    <input
-                      type="date"
-                      id="start-date"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
-                    />
-                  </div>
-                  <div>
-                    <label htmlFor="end-date" className="block text-sm font-medium text-gray-700 mb-1">
-                      End Date
-                    </label>
-                    <input
-                      type="date"
-                      id="end-date"
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
-                    />
-                  </div>
-                </div>
-                <div className="mt-4 flex justify-end">
-                  <button className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
-                    Apply Date Range
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
-
-          {/* Purchase Orders List */}
-          <div className="space-y-4">
-            {filteredOrders.length > 0 ? (
-              filteredOrders.map((order) => (
-                <div key={order.id} className="bg-white rounded-lg shadow overflow-hidden">
-                  <div className="p-6 border-b border-gray-200">
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className="bg-gray-100 p-3 rounded-full">
-                          <ShoppingCart className="h-6 w-6 text-gray-600" />
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-semibold">{order.id}</h3>
-                          <p className="text-sm text-gray-500">Created on {order.date}</p>
-                        </div>
-                      </div>
-                      <div className="mt-4 md:mt-0 flex items-center gap-3">
-                        <OrderStatusBadge status={order.status} />
-                        <PriorityBadge priority={order.priority} />
-                        <button
-                          onClick={() => setSelectedOrder(order)}
-                          className="px-4 py-2 text-sm font-medium text-green-600 bg-green-50 rounded-md hover:bg-green-100"
-                        >
-                          View Details
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <div>
-                        <h4 className="text-sm font-medium text-gray-500 mb-1">Supplier</h4>
-                        <p className="text-sm font-medium">{order.supplier.name}</p>
-                        <p className="text-sm text-gray-500">{order.supplier.location}</p>
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-medium text-gray-500 mb-1">Requested By</h4>
-                        <p className="text-sm font-medium">{order.requestedBy}</p>
-                        <p className="text-sm text-gray-500">{order.department}</p>
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-medium text-gray-500 mb-1">Order Total</h4>
-                        <p className="text-sm font-medium">₱{order.total.toLocaleString()}</p>
-                        <p className="text-sm text-gray-500">
-                          {order.paymentStatus === "paid"
-                            ? "Paid"
-                            : order.paymentStatus === "partially_paid"
-                              ? "Partially Paid"
-                              : "Unpaid"}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Order Items Summary */}
-                    <div className="mt-6">
-                      <h4 className="text-sm font-medium text-gray-500 mb-2">Order Items</h4>
-                      <div className="bg-gray-50 rounded-lg p-4">
-                        <div className="space-y-2">
-                          {order.items.map((item) => (
-                            <div key={item.id} className="flex justify-between">
-                              <span className="text-sm">
-                                {item.quantity} {item.unit} x {item.name}
-                              </span>
-                              <span className="text-sm font-medium">₱{item.total.toLocaleString()}</span>
-                            </div>
-                          ))}
-                        </div>
-                        <div className="mt-4 pt-4 border-t border-gray-200 flex justify-between">
-                          <span className="text-sm font-medium">Total</span>
-                          <span className="text-sm font-bold">₱{order.total.toLocaleString()}</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Action buttons based on status */}
-                    <div className="mt-6 flex flex-wrap gap-3 justify-end">
-                      {order.status === "pending_approval" && (
-                        <>
-                          <button
-                            onClick={() => handleApproveOrder(order.id)}
-                            className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                          >
-                            Approve Order
-                          </button>
-                          <button
-                            onClick={() => handleModifyQuantity(order.id)}
-                            className="px-4 py-2 text-sm font-medium text-blue-600 border border-blue-600 rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                          >
-                            Modify Quantities
-                          </button>
-                          <button
-                            onClick={() => handleRejectOrder(order.id)}
-                            className="px-4 py-2 text-sm font-medium text-red-600 border border-red-600 rounded-md hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-                          >
-                            Reject
-                          </button>
-                        </>
-                      )}
-                      {order.status === "approved" && (
-                        <button className="px-4 py-2 text-sm font-medium text-blue-600 border border-blue-600 rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                          Track Order
-                        </button>
-                      )}
-                      {(order.status === "approved" || order.status === "in_transit") &&
-                        order.paymentStatus !== "paid" && (
-                          <button
-                            onClick={() => handleProcessPayment(order)}
-                            className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                          >
-                            Process Payment
-                          </button>
-                        )}
-                      {order.status === "delivered" && (
-                        <button className="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
-                          View Receipt
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="bg-white rounded-lg shadow p-8 text-center">
-                <div className="mx-auto w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-4">
-                  <ShoppingCart className="h-6 w-6 text-gray-400" />
-                </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-1">No purchase orders found</h3>
-                <p className="text-gray-500 mb-4">
-                  We couldn't find any purchase orders matching your current filters. Try adjusting your search
-                  criteria.
-                </p>
-                <button
-                  onClick={() => {
-                    setStatusFilter("all")
-                    setDateRange("all")
-                    setSearchQuery("")
-                  }}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-                >
-                  Reset All Filters
-                </button>
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Order Tracking */}
-      {activeTab === "order-tracking" && (
-        <div className="space-y-6">
-          {/* Search and Filter */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex flex-col md:flex-row gap-4 justify-between">
-              <div className="relative flex-1">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Search className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  type="text"
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
-                  placeholder="Search by PO number, supplier, or department..."
-                />
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                <select className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
-                  <option value="all">All Statuses</option>
-                  <option value="approved">Approved</option>
-                  <option value="processing">Processing</option>
-                  <option value="shipped">Shipped</option>
-                  <option value="in_transit">In Transit</option>
-                  <option value="delivered">Delivered</option>
-                </select>
-
-                <select className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
-                  <option value="all">All Departments</option>
-                  <option value="education">Department of Education</option>
-                  <option value="health">Department of Health</option>
-                  <option value="social">Department of Social Welfare</option>
-                  <option value="agriculture">Department of Agriculture</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          {/* Order Tracking List */}
-          <div className="space-y-6">
-            {purchaseOrders
-              .filter((order) => order.status !== "pending_approval" && order.status !== "rejected")
-              .map((order) => (
-                <div key={order.id} className="bg-white rounded-lg shadow overflow-hidden">
-                  <div className="p-6 border-b border-gray-200">
-                    <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-                      <div className="flex items-center gap-4">
-                        <div className="bg-gray-100 p-3 rounded-full">
-                          <Truck className="h-6 w-6 text-gray-600" />
-                        </div>
-                        <div>
-                          <h3 className="text-lg font-semibold">{order.id}</h3>
-                          <p className="text-sm text-gray-500">Ordered on {order.date}</p>
-                        </div>
-                      </div>
-                      <div className="mt-4 md:mt-0 flex items-center gap-3">
-                        <OrderStatusBadge status={order.status} />
-                        <button
-                          onClick={() => setSelectedOrder(order)}
-                          className="px-4 py-2 text-sm font-medium text-green-600 bg-green-50 rounded-md hover:bg-green-100"
-                        >
-                          View Details
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="p-6">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                      <div>
-                        <h4 className="text-sm font-medium text-gray-500 mb-1">Supplier</h4>
-                        <p className="text-sm font-medium">{order.supplier.name}</p>
-                        <p className="text-sm text-gray-500">{order.supplier.location}</p>
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-medium text-gray-500 mb-1">Delivery Information</h4>
-                        <p className="text-sm font-medium">
-                          {order.status === "delivered" ? "Delivered" : `Expected delivery: ${order.deliveryDate}`}
-                        </p>
-                        <p className="text-sm text-gray-500">{order.deliveryAddress}</p>
-                      </div>
-                      <div>
-                        <h4 className="text-sm font-medium text-gray-500 mb-1">Department</h4>
-                        <p className="text-sm font-medium">{order.department}</p>
-                        <p className="text-sm text-gray-500">Requested by: {order.requestedBy}</p>
-                      </div>
-                    </div>
-
-                    {/* Tracking Timeline */}
-                    <h4 className="text-sm font-medium text-gray-500 mb-2">Tracking Updates</h4>
-                    <div className="bg-gray-50 p-4 rounded-lg">
-                      {order.trackingUpdates.length > 0 ? (
-                        <div className="relative">
-                          <div className="absolute top-0 bottom-0 left-4 w-0.5 bg-gray-200"></div>
-                          <ul className="space-y-4">
-                            {order.trackingUpdates.map((update, index) => (
-                              <li key={index} className="relative pl-10">
-                                <div className="absolute left-0 top-1 w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                                  {update.status === "approved" ? (
-                                    <Check className="h-4 w-4 text-green-600" />
-                                  ) : update.status === "processing" ? (
-                                    <Package className="h-4 w-4 text-blue-600" />
-                                  ) : update.status === "shipped" || update.status === "in_transit" ? (
-                                    <Truck className="h-4 w-4 text-purple-600" />
-                                  ) : update.status === "delivered" ? (
-                                    <Check className="h-4 w-4 text-green-600" />
-                                  ) : (
-                                    <AlertCircle className="h-4 w-4 text-red-600" />
-                                  )}
-                                </div>
-                                <div className="bg-white p-3 rounded-md shadow-sm">
-                                  <p className="text-sm font-medium">{update.status.replace("_", " ").toUpperCase()}</p>
-                                  <div className="flex justify-between text-xs text-gray-500 mt-1">
-                                    <span>{update.timestamp}</span>
-                                    <span>By: {update.user}</span>
-                                  </div>
-                                  {update.notes && <p className="text-xs text-gray-600 mt-1">{update.notes}</p>}
-                                </div>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      ) : (
-                        <div className="text-center py-4">
-                          <p className="text-gray-500">No tracking updates available yet</p>
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Action buttons */}
-                    <div className="mt-6 flex justify-end space-x-3">
-                      {order.status === "approved" && (
-                        <button className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                          Update Status to Shipped
-                        </button>
-                      )}
-                      {order.status === "in_transit" && (
-                        <button className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
-                          Mark as Delivered
-                        </button>
-                      )}
-                      {order.status === "delivered" && (
-                        <button className="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
-                          Download Delivery Receipt
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-          </div>
-        </div>
-      )}
-
-      {/* Payments & Invoicing */}
-      {activeTab === "payments-invoicing" && (
-        <div className="space-y-6">
-          {/* Search and Filter */}
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="flex flex-col md:flex-row gap-4 justify-between">
-              <div className="relative flex-1">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Search className="h-5 w-5 text-gray-400" />
-                </div>
-                <input
-                  type="text"
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
-                  placeholder="Search by invoice number, PO number, or supplier..."
-                />
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                <select className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
-                  <option value="all">All Payment Statuses</option>
-                  <option value="paid">Paid</option>
-                  <option value="partially_paid">Partially Paid</option>
-                  <option value="unpaid">Unpaid</option>
-                </select>
-
-                <select className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
-                  <option value="all">All Departments</option>
-                  <option value="education">Department of Education</option>
-                  <option value="health">Department of Health</option>
-                  <option value="social">Department of Social Welfare</option>
-                  <option value="agriculture">Department of Agriculture</option>
-                </select>
-              </div>
-            </div>
-          </div>
-
-          {/* Invoices Table */}
-          <div className="bg-white rounded-lg shadow overflow-hidden">
-            <div className="p-6 border-b">
-              <h3 className="text-lg font-medium">Invoices</h3>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Invoice #
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      PO #
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Date
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Supplier
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Department
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Amount
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Status
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
-                  {invoices.map((invoice) => (
-                    <tr key={invoice.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{invoice.id}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{invoice.orderId}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{invoice.date}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{invoice.supplier}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{invoice.department}</td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        ₱{invoice.amount.toLocaleString()}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <PaymentStatusBadge status={invoice.status} />
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        <div className="flex space-x-2">
-                          <button
-                            onClick={() => setSelectedInvoice(invoice)}
-                            className="text-blue-600 hover:text-blue-900"
-                            title="View"
-                          >
-                            <Eye className="h-5 w-5" />
-                          </button>
-                          <button className="text-green-600 hover:text-green-900" title="Download">
-                            <Download className="h-5 w-5" />
-                          </button>
-                          {invoice.status !== "paid" && (
-                            <button
-                              className="text-green-600 hover:text-green-900"
-                              title="Process Payment"
-                              onClick={() => {
-                                const order = purchaseOrders.find((o) => o.id === invoice.orderId)
-                                if (order) {
-                                  handleProcessPayment(order)
-                                }
-                              }}
-                            >
-                              <CreditCard className="h-5 w-5" />
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          {/* Payment Summary */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-medium mb-4">Payment Summary</h3>
-              <div className="space-y-4">
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Total Invoices</span>
-                  <span className="font-medium">{invoices.length}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Paid Invoices</span>
-                  <span className="font-medium">{invoices.filter((i) => i.status === "paid").length}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Partially Paid</span>
-                  <span className="font-medium">{invoices.filter((i) => i.status === "partially_paid").length}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Unpaid Invoices</span>
-                  <span className="font-medium">{invoices.filter((i) => i.status === "unpaid").length}</span>
-                </div>
-                <div className="pt-4 border-t">
-                  <div className="flex justify-between">
-                    <span className="font-medium">Total Amount</span>
-                    <span className="font-bold text-green-600">
-                      ₱{invoices.reduce((sum, i) => sum + i.amount, 0).toLocaleString()}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-medium mb-4">Payment Methods</h3>
-              <div className="space-y-4">
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Bank Transfer</span>
-                  <span className="font-medium">
-                    {invoices.filter((i) => i.paymentMethod === "bank_transfer").length} invoices
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-500">Government Voucher</span>
-                  <span className="font-medium">
-                    {invoices.filter((i) => i.paymentMethod === "government_voucher").length} invoices
-                  </span>
-                </div>
-                <div className="pt-4 border-t">
-                  <div className="flex justify-between">
-                    <span className="font-medium">Total Paid</span>
-                    <span className="font-bold text-green-600">
-                      ₱
-                      {invoices
-                        .filter((i) => i.status === "paid")
-                        .reduce((sum, i) => sum + i.amount, 0)
-                        .toLocaleString()}
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-lg shadow p-6">
-              <h3 className="text-lg font-medium mb-4">Department Breakdown</h3>
-              <div className="space-y-4">
-                {Array.from(new Set(invoices.map((i) => i.department))).map((department) => (
-                  <div key={department} className="flex justify-between">
-                    <span className="text-gray-500">{department}</span>
-                    <span className="font-medium">
-                      ₱
-                      {invoices
-                        .filter((i) => i.department === department)
-                        .reduce((sum, i) => sum + i.amount, 0)
-                        .toLocaleString()}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Order Details Modal */}
-      {selectedOrder && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-              <h3 className="text-lg font-semibold">Purchase Order Details: {selectedOrder.id}</h3>
-              <button onClick={() => setSelectedOrder(null)} className="text-gray-400 hover:text-gray-500">
-                <X className="h-6 w-6" />
-              </button>
-            </div>
-            <div className="p-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-2">Order Information</h4>
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <p className="text-xs text-gray-500">Order Date</p>
-                        <p className="text-sm font-medium">{selectedOrder.date}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Status</p>
-                        <OrderStatusBadge status={selectedOrder.status} />
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Payment Status</p>
-                        <p
-                          className={`text-sm font-medium ${
-                            selectedOrder.paymentStatus === "paid"
-                              ? "text-green-600"
-                              : selectedOrder.paymentStatus === "partially_paid"
-                                ? "text-yellow-600"
-                                : "text-red-600"
-                          }`}
-                        >
-                          {selectedOrder.paymentStatus === "paid"
-                            ? "Paid"
-                            : selectedOrder.paymentStatus === "partially_paid"
-                              ? "Partially Paid"
-                              : "Unpaid"}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Payment Method</p>
-                        <p className="text-sm font-medium">
-                          {selectedOrder.paymentMethod === "bank_transfer" ? "Bank Transfer" : "Government Voucher"}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-2">Supplier Information</h4>
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <p className="text-sm font-medium">{selectedOrder.supplier.name}</p>
-                    <p className="text-sm text-gray-500 mt-1">{selectedOrder.supplier.location}</p>
-                    <p className="text-sm text-gray-500 mt-1">
-                      Contact: {selectedOrder.supplier.contactPerson}, {selectedOrder.supplier.contactNumber}
-                    </p>
-                    <p className="text-sm text-gray-500 mt-1">Email: {selectedOrder.supplier.email}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-2">Requested By</h4>
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <p className="text-sm font-medium">{selectedOrder.requestedBy}</p>
-                    <p className="text-sm text-gray-500 mt-1">{selectedOrder.department}</p>
-                    <p className="text-sm text-gray-500 mt-1">Priority: {selectedOrder.priority.toUpperCase()}</p>
-                  </div>
-                </div>
-                <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-2">Delivery Information</h4>
-                  <div className="bg-gray-50 p-4 rounded-lg">
-                    <p className="text-sm font-medium">{selectedOrder.deliveryAddress}</p>
-                    <p className="text-sm text-gray-500 mt-1">Expected Delivery: {selectedOrder.deliveryDate}</p>
-                    {selectedOrder.notes && (
-                      <div className="mt-2 p-2 bg-yellow-50 border border-yellow-100 rounded-md">
-                        <p className="text-xs text-yellow-800">Note: {selectedOrder.notes}</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <h4 className="text-sm font-medium text-gray-500 mb-2">Order Items</h4>
-              <div className="bg-gray-50 p-4 rounded-lg mb-6">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead>
-                    <tr>
-                      <th
-                        scope="col"
-                        className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Item
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Quantity
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Unit
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Price
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Total
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {selectedOrder.items.map((item) => (
-                      <tr key={item.id}>
-                        <td className="px-4 py-3 text-sm text-gray-900">{item.name}</td>
-                        <td className="px-4 py-3 text-sm text-gray-500 text-right">{item.quantity}</td>
-                        <td className="px-4 py-3 text-sm text-gray-500 text-right">{item.unit}</td>
-                        <td className="px-4 py-3 text-sm text-gray-500 text-right">₱{item.price.toFixed(2)}</td>
-                        <td className="px-4 py-3 text-sm font-medium text-gray-900 text-right">
-                          ₱{item.total.toLocaleString()}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <td colSpan="4" className="px-4 py-3 text-sm font-medium text-gray-900 text-right">
-                        Total
-                      </td>
-                      <td className="px-4 py-3 text-sm font-bold text-gray-900 text-right">
-                        ₱{selectedOrder.total.toLocaleString()}
-                      </td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-
-              {/* Tracking Timeline */}
-              {selectedOrder.trackingUpdates.length > 0 && (
-                <>
-                  <h4 className="text-sm font-medium text-gray-500 mb-2">Tracking Updates</h4>
-                  <div className="bg-gray-50 p-4 rounded-lg mb-6">
-                    <div className="relative">
-                      <div className="absolute top-0 bottom-0 left-4 w-0.5 bg-gray-200"></div>
-                      <ul className="space-y-4">
-                        {selectedOrder.trackingUpdates.map((update, index) => (
-                          <li key={index} className="relative pl-10">
-                            <div className="absolute left-0 top-1 w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                              {update.status === "approved" ? (
-                                <Check className="h-4 w-4 text-green-600" />
-                              ) : update.status === "processing" ? (
-                                <Package className="h-4 w-4 text-blue-600" />
-                              ) : update.status === "shipped" || update.status === "in_transit" ? (
-                                <Truck className="h-4 w-4 text-purple-600" />
-                              ) : update.status === "delivered" ? (
-                                <Check className="h-4 w-4 text-green-600" />
-                              ) : (
-                                <AlertCircle className="h-4 w-4 text-red-600" />
-                              )}
-                            </div>
-                            <div className="bg-white p-3 rounded-md shadow-sm">
-                              <p className="text-sm font-medium">{update.status.replace("_", " ").toUpperCase()}</p>
-                              <div className="flex justify-between text-xs text-gray-500 mt-1">
-                                <span>{update.timestamp}</span>
-                                <span>By: {update.user}</span>
-                              </div>
-                              {update.notes && <p className="text-xs text-gray-600 mt-1">{update.notes}</p>}
-                            </div>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  </div>
-                </>
-              )}
-
-              <div className="flex justify-end space-x-3">
-                <button
-                  onClick={() => setSelectedOrder(null)}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-                >
-                  Close
-                </button>
-
-                {selectedOrder.status === "pending_approval" && (
-                  <>
-                    <button
-                      onClick={() => handleModifyQuantity(selectedOrder.id)}
-                      className="px-4 py-2 text-sm font-medium text-blue-600 border border-blue-600 rounded-md hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-                    >
-                      Modify Quantities
-                    </button>
-                    <button
-                      onClick={() => handleRejectOrder(selectedOrder.id)}
-                      className="px-4 py-2 text-sm font-medium text-red-600 border border-red-600 rounded-md hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
-                    >
-                      Reject
-                    </button>
-                    <button
-                      onClick={() => handleApproveOrder(selectedOrder.id)}
-                      className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                    >
-                      Approve Order
-                    </button>
-                  </>
-                )}
-
-                {(selectedOrder.status === "approved" || selectedOrder.status === "in_transit") &&
-                  selectedOrder.paymentStatus !== "paid" && (
-                    <button
-                      onClick={() => handleProcessPayment(selectedOrder)}
-                      className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                    >
-                      Process Payment
-                    </button>
-                  )}
-
-                {selectedOrder.status === "delivered" && (
-                  <button className="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
-                    Download Receipt
-                  </button>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Invoice Details Modal */}
-      {selectedInvoice && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-            <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-              <h3 className="text-lg font-semibold">Invoice: {selectedInvoice.id}</h3>
-              <button onClick={() => setSelectedInvoice(null)} className="text-gray-400 hover:text-gray-500">
-                <X className="h-6 w-6" />
-              </button>
-            </div>
-            <div className="p-6">
-              <div className="grid grid-cols-2 gap-6 mb-6">
-                <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-2">From</h4>
-                  <p className="font-medium">{selectedInvoice.supplier}</p>
-                  <p className="text-sm text-gray-500">Supplier Address</p>
-                  <p className="text-sm text-gray-500">Philippines</p>
-                </div>
-                <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-2">To</h4>
-                  <p className="font-medium">{selectedInvoice.department}</p>
-                  <p className="text-sm text-gray-500">Government Agency Address</p>
-                  <p className="text-sm text-gray-500">Philippines</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-6 mb-6">
-                <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-2">Invoice Details</h4>
-                  <div className="bg-gray-50 p-3 rounded-md">
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
-                        <p className="text-xs text-gray-500">Invoice Number</p>
-                        <p className="text-sm font-medium">{selectedInvoice.id}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Order ID</p>
-                        <p className="text-sm font-medium">{selectedInvoice.orderId}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Invoice Date</p>
-                        <p className="text-sm font-medium">{selectedInvoice.date}</p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Due Date</p>
-                        <p className="text-sm font-medium">{selectedInvoice.dueDate}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <h4 className="text-sm font-medium text-gray-500 mb-2">Payment Status</h4>
-                  <div className="bg-gray-50 p-3 rounded-md">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-xs text-gray-500">Status</p>
-                        <p
-                          className={`text-sm font-medium ${
-                            selectedInvoice.status === "paid"
-                              ? "text-green-600"
-                              : selectedInvoice.status === "partially_paid"
-                                ? "text-yellow-600"
-                                : "text-red-600"
-                          }`}
-                        >
-                          {selectedInvoice.status === "paid"
-                            ? "Paid"
-                            : selectedInvoice.status === "partially_paid"
-                              ? "Partially Paid"
-                              : "Unpaid"}
-                        </p>
-                      </div>
-                      <div>
-                        <p className="text-xs text-gray-500">Amount</p>
-                        <p className="text-sm font-bold">₱{selectedInvoice.amount.toLocaleString()}</p>
-                      </div>
-                    </div>
-                    {selectedInvoice.status === "partially_paid" && (
-                      <div className="mt-2 pt-2 border-t border-gray-200">
-                        <div className="flex justify-between">
-                          <p className="text-xs text-gray-500">Paid Amount</p>
-                          <p className="text-xs font-medium">₱{selectedInvoice.partialPayment.toLocaleString()}</p>
-                        </div>
-                        <div className="flex justify-between">
-                          <p className="text-xs text-gray-500">Remaining</p>
-                          <p className="text-xs font-medium">₱{selectedInvoice.remainingAmount.toLocaleString()}</p>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <h4 className="text-sm font-medium text-gray-500 mb-2">Invoice Items</h4>
-              <div className="bg-gray-50 p-4 rounded-lg mb-6">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead>
-                    <tr>
-                      <th
-                        scope="col"
-                        className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Item
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Quantity
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Unit
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Price
-                      </th>
-                      <th
-                        scope="col"
-                        className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-                      >
-                        Total
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-200">
-                    {selectedInvoice.items.map((item, index) => (
-                      <tr key={index}>
-                        <td className="px-4 py-3 text-sm text-gray-900">{item.name}</td>
-                        <td className="px-4 py-3 text-sm text-gray-500 text-right">{item.quantity}</td>
-                        <td className="px-4 py-3 text-sm text-gray-500 text-right">{item.unit}</td>
-                        <td className="px-4 py-3 text-sm text-gray-500 text-right">₱{item.price.toFixed(2)}</td>
-                        <td className="px-4 py-3 text-sm font-medium text-gray-900 text-right">
-                          ₱{item.total.toLocaleString()}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <td colSpan="4" className="px-4 py-3 text-sm font-medium text-gray-900 text-right">
-                        Total
-                      </td>
-                      <td className="px-4 py-3 text-sm font-bold text-gray-900 text-right">
-                        ₱{selectedInvoice.amount.toLocaleString()}
-                      </td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-
-              <div className="flex justify-end space-x-3">
-                <button
-                  onClick={() => setSelectedInvoice(null)}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-                >
-                  Close
-                </button>
-                <button className="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
-                  Print Invoice
-                </button>
-                <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
-                  <Download className="h-4 w-4" />
-                  Download PDF
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Modify Quantity Modal */}
-      {isModifyQuantityModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl">
-            <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-              <h3 className="text-lg font-semibold">Modify Order Quantities</h3>
-              <button onClick={() => setIsModifyQuantityModalOpen(false)} className="text-gray-400 hover:text-gray-500">
-                <X className="h-6 w-6" />
-              </button>
-            </div>
-            <div className="p-6">
-              <p className="text-sm text-gray-500 mb-4">
-                Adjust the quantities below. The total will be recalculated automatically.
+    <div className="flex-1 bg-gray-50">
+      {/* Header */}
+      <div className="">
+        <div className="mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Order Management</h1>
+              <p className="mt-1 text-sm text-gray-500">
+                Manage purchase orders, track deliveries, and process payments
               </p>
-
-              <div className="space-y-4">
-                {modifiedItems.map((item, index) => (
-                  <div key={item.id} className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">{item.name}</p>
-                      <p className="text-xs text-gray-500">
-                        ₱{item.price.toFixed(2)} per {item.unit}
-                      </p>
-                    </div>
-                    <div className="w-32">
-                      <label htmlFor={`quantity-${item.id}`} className="sr-only">
-                        Quantity
-                      </label>
-                      <input
-                        type="number"
-                        id={`quantity-${item.id}`}
-                        min="0"
-                        value={item.quantity}
-                        onChange={(e) => {
-                          const newQuantity = Number.parseInt(e.target.value) || 0
-                          const newItems = [...modifiedItems]
-                          newItems[index] = {
-                            ...item,
-                            quantity: newQuantity,
-                            total: newQuantity * item.price,
-                          }
-                          setModifiedItems(newItems)
-                        }}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
-                      />
-                    </div>
-                    <div className="w-32 text-right">
-                      <p className="text-sm font-medium">₱{(item.quantity * item.price).toLocaleString()}</p>
-                    </div>
-                  </div>
-                ))}
-
-                <div className="pt-4 border-t border-gray-200">
-                  <div className="flex justify-between">
-                    <span className="text-sm font-medium">New Total</span>
-                    <span className="text-sm font-bold">
-                      ₱{modifiedItems.reduce((sum, item) => sum + item.quantity * item.price, 0).toLocaleString()}
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-6 flex justify-end space-x-3">
-                <button
-                  onClick={() => setIsModifyQuantityModalOpen(false)}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleSaveModifiedQuantities}
-                  className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                >
-                  Save Changes
-                </button>
-              </div>
+            </div>
+            <div className="flex items-center gap-3">
+              <button className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors shadow-sm">
+                <Download size={16} />
+                Export Orders
+              </button>
+              <button className="flex items-center gap-2 px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-600 transition-colors shadow-sm">
+                <ShoppingCart size={16} />
+                New Order
+              </button>
             </div>
           </div>
         </div>
-      )}
+      </div>
 
-      {/* Payment Processing Modal */}
-      {isPaymentModalOpen && selectedPaymentOrder && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-2xl">
-            <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-              <h3 className="text-lg font-semibold">Process Payment</h3>
-              <button onClick={() => setIsPaymentModalOpen(false)} className="text-gray-400 hover:text-gray-500">
-                <X className="h-6 w-6" />
-              </button>
-            </div>
-            <div className="p-6">
-              <div className="mb-6">
-                <h4 className="text-sm font-medium text-gray-500 mb-2">Order Information</h4>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-xs text-gray-500">Order ID</p>
-                      <p className="text-sm font-medium">{selectedPaymentOrder.id}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Supplier</p>
-                      <p className="text-sm font-medium">{selectedPaymentOrder.supplier.name}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Total Amount</p>
-                      <p className="text-sm font-medium">₱{selectedPaymentOrder.total.toLocaleString()}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500">Payment Status</p>
-                      <p
-                        className={`text-sm font-medium ${
-                          selectedPaymentOrder.paymentStatus === "paid"
-                            ? "text-green-600"
-                            : selectedPaymentOrder.paymentStatus === "partially_paid"
-                              ? "text-yellow-600"
-                              : "text-red-600"
-                        }`}
-                      >
-                        {selectedPaymentOrder.paymentStatus === "paid"
-                          ? "Paid"
-                          : selectedPaymentOrder.paymentStatus === "partially_paid"
-                            ? "Partially Paid"
-                            : "Unpaid"}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+      {/* Main Content */}
+      <div className="max-w-l mx-auto px-4 sm:px-6 lg:px-8 pb-6">
+        {/* Tabs */}
+        <div className="bg-white rounded-xl shadow-sm mb-6 overflow-hidden">
+          <div className="flex overflow-x-auto">
+            <button
+              onClick={() => setActiveTab("purchase-orders")}
+              className={`py-4 px-6 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === "purchase-orders"
+                  ? "border-green-500 text-green-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              }`}
+            >
+              Purchase Orders
+            </button>
+            <button
+              onClick={() => setActiveTab("order-tracking")}
+              className={`py-4 px-6 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === "order-tracking"
+                  ? "border-green-500 text-green-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              }`}
+            >
+              Order Tracking
+            </button>
+            <button
+              onClick={() => setActiveTab("payments-invoicing")}
+              className={`py-4 px-6 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === "payments-invoicing"
+                  ? "border-green-500 text-green-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              }`}
+            >
+              Payments & Invoicing
+            </button>
+            <button
+              onClick={() => setActiveTab("communication")}
+              className={`py-4 px-6 text-sm font-medium border-b-2 transition-colors ${
+                activeTab === "communication"
+                  ? "border-green-500 text-green-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              }`}
+            >
+              Communication
+            </button>
+          </div>
+        </div>
+
+        {/* Purchase Orders */}
+        {activeTab === "purchase-orders" && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Left Column - Orders List */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Stats Overview */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <StatCard
+                  title="Total Orders"
+                  value={purchaseOrders.length.toString()}
+                  change="+12.2%"
+                  icon={<ShoppingCart className="w-6 h-6 text-white" />}
+                  color="blue"
+                />
+                <StatCard
+                  title="Pending Orders"
+                  value={purchaseOrders.filter((o) => o.status === "pending_approval").length.toString()}
+                  change="+5.1%"
+                  icon={<Clock className="w-6 h-6 text-white" />}
+                  color="amber"
+                />
+                <StatCard
+                  title="Delivered"
+                  value={purchaseOrders.filter((o) => o.status === "delivered").length.toString()}
+                  change="+18.4%"
+                  icon={<Package className="w-6 h-6 text-white" />}
+                  color="green"
+                />
+                <StatCard
+                  title="Total Spent"
+                  value={`₱${purchaseOrders.reduce((sum, order) => sum + order.total, 0).toLocaleString()}`}
+                  change="+20.1%"
+                  icon={<DollarSign className="w-6 h-6 text-white" />}
+                  color="purple"
+                />
               </div>
 
-              <div className="space-y-4">
-                <div>
-                  <label htmlFor="payment-method" className="block text-sm font-medium text-gray-700 mb-1">
-                    Payment Method
-                  </label>
-                  <select
-                    id="payment-method"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
-                  >
-                    <option value="bank_transfer">Bank Transfer</option>
-                    <option value="government_voucher">Government Voucher</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label htmlFor="payment-amount" className="block text-sm font-medium text-gray-700 mb-1">
-                    Payment Amount
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <span className="text-gray-500">₱</span>
-                    </div>
-                    <input
-                      type="number"
-                      id="payment-amount"
-                      defaultValue={selectedPaymentOrder.total}
-                      className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
-                      placeholder="Enter payment amount"
-                    />
+              {/* Filters */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-between bg-white p-4 shadow-sm rounded-xl">
+                <div className="relative flex-1 max-w-md">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Search className="h-5 w-5 text-gray-400" />
                   </div>
-                  <p className="mt-1 text-xs text-gray-500">
-                    {selectedPaymentOrder.paymentStatus === "partially_paid"
-                      ? "Remaining balance: ₱XX,XXX.XX"
-                      : "Enter the full amount or a partial payment"}
-                  </p>
-                </div>
-
-                <div>
-                  <label htmlFor="payment-date" className="block text-sm font-medium text-gray-700 mb-1">
-                    Payment Date
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Calendar className="h-5 w-5 text-gray-400" />
-                    </div>
-                    <input
-                      type="date"
-                      id="payment-date"
-                      defaultValue={new Date().toISOString().split("T")[0]}
-                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label htmlFor="payment-reference" className="block text-sm font-medium text-gray-700 mb-1">
-                    Reference Number
-                  </label>
                   <input
                     type="text"
-                    id="payment-reference"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
-                    placeholder="Enter reference number"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="block w-full pl-10 pr-3 py-2 border bg-white border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                    placeholder="Search orders..."
                   />
                 </div>
 
-                <div>
-                  <label htmlFor="payment-notes" className="block text-sm font-medium text-gray-700 mb-1">
-                    Notes
-                  </label>
-                  <textarea
-                    id="payment-notes"
-                    rows="3"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
-                    placeholder="Add any additional notes about this payment"
-                  ></textarea>
+                <div className="flex space-x-2">
+                  <div className="relative">
+                    <button
+                      onClick={() => setIsStatusDropdownOpen(!isStatusDropdownOpen)}
+                      className="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-md bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+                    >
+                      <Filter className="h-4 w-4 text-gray-500" />
+                      <span>Status</span>
+                      <ChevronDown className="h-4 w-4 text-gray-500" />
+                    </button>
+                    {isStatusDropdownOpen && (
+                      <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-md shadow-lg z-10">
+                        <div className="py-1">
+                          <button
+                            onClick={() => {
+                              setStatusFilter("all")
+                              setIsStatusDropdownOpen(false)
+                            }}
+                            className={`block px-4 py-2 text-sm w-full text-left ${
+                              statusFilter === "all" ? "bg-green-50 text-green-700" : "text-gray-700 hover:bg-gray-100"
+                            }`}
+                          >
+                            All Orders
+                          </button>
+                          <button
+                            onClick={() => {
+                              setStatusFilter("pending_approval")
+                              setIsStatusDropdownOpen(false)
+                            }}
+                            className={`block px-4 py-2 text-sm w-full text-left ${
+                              statusFilter === "pending_approval"
+                                ? "bg-green-50 text-green-700"
+                                : "text-gray-700 hover:bg-gray-100"
+                            }`}
+                          >
+                            Pending Approval
+                          </button>
+                          <button
+                            onClick={() => {
+                              setStatusFilter("approved")
+                              setIsStatusDropdownOpen(false)
+                            }}
+                            className={`block px-4 py-2 text-sm w-full text-left ${
+                              statusFilter === "approved"
+                                ? "bg-green-50 text-green-700"
+                                : "text-gray-700 hover:bg-gray-100"
+                            }`}
+                          >
+                            Approved
+                          </button>
+                          <button
+                            onClick={() => {
+                              setStatusFilter("in_transit")
+                              setIsStatusDropdownOpen(false)
+                            }}
+                            className={`block px-4 py-2 text-sm w-full text-left ${
+                              statusFilter === "in_transit"
+                                ? "bg-green-50 text-green-700"
+                                : "text-gray-700 hover:bg-gray-100"
+                            }`}
+                          >
+                            In Transit
+                          </button>
+                          <button
+                            onClick={() => {
+                              setStatusFilter("delivered")
+                              setIsStatusDropdownOpen(false)
+                            }}
+                            className={`block px-4 py-2 text-sm w-full text-left ${
+                              statusFilter === "delivered"
+                                ? "bg-green-50 text-green-700"
+                                : "text-gray-700 hover:bg-gray-100"
+                            }`}
+                          >
+                            Delivered
+                          </button>
+                          <button
+                            onClick={() => {
+                              setStatusFilter("rejected")
+                              setIsStatusDropdownOpen(false)
+                            }}
+                            className={`block px-4 py-2 text-sm w-full text-left ${
+                              statusFilter === "rejected"
+                                ? "bg-green-50 text-green-700"
+                                : "text-gray-700 hover:bg-gray-100"
+                            }`}
+                          >
+                            Rejected
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  <select className="px-3 py-2 border bg-white border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="highest">Highest Amount</option>
+                    <option value="lowest">Lowest Amount</option>
+                  </select>
                 </div>
               </div>
 
-              <div className="mt-6 flex justify-end space-x-3">
-                <button
-                  onClick={() => setIsPaymentModalOpen(false)}
-                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleSubmitPayment}
-                  className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
-                >
-                  Process Payment
-                </button>
+              {/* Orders List */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="flex items-center justify-between p-5 border-b border-gray-100">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">Recent Orders</h3>
+                    <p className="text-sm text-gray-500 mt-1">Manage and process your purchase orders</p>
+                  </div>
+
+                  <button className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
+                    View All
+                    <ChevronRight size={16} />
+                  </button>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="text-left bg-green-500">
+                        <th className="px-6 py-4 font-medium text-white text-sm">Order ID</th>
+                        <th className="px-6 py-4 font-medium text-white text-sm">Supplier</th>
+                        <th className="px-6 py-4 font-medium text-white text-sm">Date</th>
+                        <th className="px-6 py-4 font-medium text-white text-sm">Amount</th>
+                        <th className="px-6 py-4 font-medium text-white text-sm">Status</th>
+                        <th className="px-6 py-4 font-medium text-white text-sm">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredOrders.map((order) => (
+                        <tr key={order.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                          <td className="px-6 py-4 text-sm font-medium">{order.id}</td>
+                          <td className="px-6 py-4 text-sm">{order.supplier.name}</td>
+                          <td className="px-6 py-4 text-sm">{order.date}</td>
+                          <td className="px-6 py-4 text-sm font-medium">₱{order.total.toLocaleString()}</td>
+                          <td className="px-6 py-4">
+                            <OrderStatusBadge status={order.status} />
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={() => setSelectedOrder(order)}
+                                className="px-3 py-1 text-xs font-medium text-green-600 bg-green-50 rounded-md hover:bg-green-100"
+                              >
+                                View
+                              </button>
+                              {order.status === "pending_approval" && (
+                                <button
+                                  onClick={() => handleApproveOrder(order.id)}
+                                  className="px-3 py-1 text-xs font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100"
+                                >
+                                  Approve
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {filteredOrders.length === 0 && (
+                  <div className="p-8 text-center">
+                    <div className="mx-auto w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-4">
+                      <Package className="h-6 w-6 text-gray-400" />
+                    </div>
+                    <h3 className="text-lg font-medium text-gray-900 mb-1">No orders found</h3>
+                    <p className="text-gray-500">
+                      {statusFilter === "all"
+                        ? "You don't have any orders yet."
+                        : `You don't have any ${statusFilter.replace("_", " ")} orders.`}
+                    </p>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Right Column - Sidebar */}
+            <div className="space-y-6">
+              {/* Payment Summary */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="p-5 border-b border-gray-100">
+                  <h3 className="text-lg font-semibold text-gray-900">Payment Summary</h3>
+                </div>
+                <div className="p-5 space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500">Total Orders</span>
+                    <span className="font-medium text-xl">{purchaseOrders.length}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500">Pending Payments</span>
+                    <span className="font-medium text-xl">
+                      {purchaseOrders.filter((o) => o.paymentStatus === "unpaid").length}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500">Completed Payments</span>
+                    <span className="font-medium text-xl">
+                      {purchaseOrders.filter((o) => o.paymentStatus === "paid").length}
+                    </span>
+                  </div>
+                  <div className="pt-4 border-t border-gray-300">
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium">Total Spent</span>
+                      <span className="font-bold text-green-600 text-xl">
+                        ₱{purchaseOrders.reduce((sum, order) => sum + order.total, 0).toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Recent Messages */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="flex items-center justify-between p-5 border-b border-gray-100">
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-lg font-semibold text-gray-900">Recent Messages</h3>
+                    <div className="px-2 py-0.5 text-xs font-semibold text-white bg-green-500 rounded-full">
+                      {purchaseOrders.filter((o) => o.messages && o.messages.length > 0).length}
+                    </div>
+                  </div>
+                  <button className="text-sm font-medium text-green-500 hover:text-green-600 transition-colors">
+                    View All
+                  </button>
+                </div>
+                <div className="p-5">
+                  <div className="h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                    {purchaseOrders.some((o) => o.messages && o.messages.length > 0) ? (
+                      <div className="space-y-3">
+                        {purchaseOrders
+                          .filter((o) => o.messages && o.messages.length > 0)
+                          .map((order) => (
+                            <div
+                              key={order.id}
+                              className="flex items-start gap-3 p-3 rounded-lg bg-gray-50 border border-gray-100 hover:border-gray-200 transition-colors"
+                            >
+                              <div className="rounded-full p-2 bg-blue-100">
+                                <MessageCircle className="w-4 h-4 text-blue-600" />
+                              </div>
+                              <div className="flex-1 space-y-1">
+                                <p className="text-sm font-medium text-gray-900">
+                                  {order.supplier.name} - {order.id}
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                  {order.messages[order.messages.length - 1].text.substring(0, 50)}
+                                  {order.messages[order.messages.length - 1].text.length > 50 ? "..." : ""}
+                                </p>
+                                <p className="text-xs text-gray-400">
+                                  {order.messages[order.messages.length - 1].time}
+                                </p>
+                              </div>
+                              <button
+                                className="flex items-center justify-center w-7 h-7 rounded-md hover:bg-gray-200 transition-colors"
+                                onClick={() => {
+                                  setActiveTab("communication")
+                                  setSelectedOrder(order)
+                                }}
+                                aria-label="View conversation"
+                              >
+                                <ChevronRight className="h-4 w-4 text-gray-500" />
+                              </button>
+                            </div>
+                          ))}
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center h-full text-center p-4">
+                        <div className="p-3 bg-gray-100 rounded-full mb-3">
+                          <MessageCircle className="h-6 w-6 text-gray-500" />
+                        </div>
+                        <h3 className="font-medium text-gray-900">No new messages</h3>
+                        <p className="text-sm text-gray-500 mt-1">
+                          You're all caught up! New messages will appear here.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Actions */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="p-5 border-b border-gray-100">
+                  <h3 className="text-lg font-semibold text-gray-900">Quick Actions</h3>
+                </div>
+                <div className="p-5 space-y-3">
+                  <QuickActionButton
+                    label="Create Purchase Order"
+                    icon={<ShoppingCart className="w-4 h-4" />}
+                    color="green"
+                  />
+                  <QuickActionButton label="Process Payment" icon={<CreditCard className="w-4 h-4" />} color="blue" />
+                  <QuickActionButton label="Track Deliveries" icon={<Truck className="w-4 h-4" />} color="purple" />
+                  <QuickActionButton label="View Reports" icon={<BarChart3 className="w-4 h-4" />} color="amber" />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {/* Order Tracking */}
+        {activeTab === "order-tracking" && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Left Column - Tracking List */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Stats Overview */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <StatCard
+                  title="Total Orders"
+                  value={purchaseOrders.length.toString()}
+                  change="+12.2%"
+                  icon={<ShoppingCart className="w-6 h-6 text-white" />}
+                  color="blue"
+                />
+                <StatCard
+                  title="In Transit"
+                  value={purchaseOrders.filter((o) => o.status === "in_transit").length.toString()}
+                  change="+5.1%"
+                  icon={<Truck className="w-6 h-6 text-white" />}
+                  color="purple"
+                />
+                <StatCard
+                  title="Delivered"
+                  value={purchaseOrders.filter((o) => o.status === "delivered").length.toString()}
+                  change="+18.4%"
+                  icon={<Package className="w-6 h-6 text-white" />}
+                  color="green"
+                />
+                <StatCard
+                  title="On-Time Delivery"
+                  value="92%"
+                  change="+3.1%"
+                  icon={<Clock className="w-6 h-6 text-white" />}
+                  color="amber"
+                />
+              </div>
+
+              {/* Search and Filter */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-between bg-white p-4 shadow-sm rounded-xl">
+                <div className="relative flex-1 max-w-md">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Search className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    className="block w-full pl-10 pr-3 py-2 border bg-white border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                    placeholder="Search by PO number, supplier, or department..."
+                  />
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  <select className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+                    <option value="all">All Statuses</option>
+                    <option value="approved">Approved</option>
+                    <option value="processing">Processing</option>
+                    <option value="shipped">Shipped</option>
+                    <option value="in_transit">In Transit</option>
+                    <option value="delivered">Delivered</option>
+                  </select>
+
+                  <select className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+                    <option value="all">All Departments</option>
+                    <option value="education">Department of Education</option>
+                    <option value="health">Department of Health</option>
+                    <option value="social">Department of Social Welfare</option>
+                    <option value="agriculture">Department of Agriculture</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Order Tracking List */}
+              <div className="space-y-6">
+                {purchaseOrders
+                  .filter((order) => order.status !== "pending_approval" && order.status !== "rejected")
+                  .map((order) => (
+                    <div
+                      key={order.id}
+                      className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden"
+                    >
+                      <div className="p-6 border-b border-gray-100">
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+                          <div className="flex items-center gap-4">
+                            <div className="bg-gray-100 p-3 rounded-full">
+                              <Truck className="h-6 w-6 text-gray-600" />
+                            </div>
+                            <div>
+                              <h3 className="text-lg font-semibold">{order.id}</h3>
+                              <p className="text-sm text-gray-500">Ordered on {order.date}</p>
+                            </div>
+                          </div>
+                          <div className="mt-4 md:mt-0 flex items-center gap-3">
+                            <OrderStatusBadge status={order.status} />
+                            <button
+                              onClick={() => setSelectedOrder(order)}
+                              className="px-4 py-2 text-sm font-medium text-green-600 bg-green-50 rounded-md hover:bg-green-100"
+                            >
+                              View Details
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="p-6">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                          <div>
+                            <h4 className="text-sm font-medium text-gray-500 mb-1">Supplier</h4>
+                            <p className="text-sm font-medium">{order.supplier.name}</p>
+                            <p className="text-sm text-gray-500">{order.supplier.location}</p>
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-medium text-gray-500 mb-1">Delivery Information</h4>
+                            <p className="text-sm font-medium">
+                              {order.status === "delivered" ? "Delivered" : `Expected delivery: ${order.deliveryDate}`}
+                            </p>
+                            <p className="text-sm text-gray-500">{order.deliveryAddress}</p>
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-medium text-gray-500 mb-1">Department</h4>
+                            <p className="text-sm font-medium">{order.department}</p>
+                            <p className="text-sm text-gray-500">Requested by: {order.requestedBy}</p>
+                          </div>
+                        </div>
+
+                        {/* Tracking Timeline */}
+                        <h4 className="text-sm font-medium text-gray-500 mb-2">Tracking Updates</h4>
+                        <div className="bg-gray-50 p-4 rounded-lg">
+                          {order.trackingUpdates.length > 0 ? (
+                            <div className="relative">
+                              <div className="absolute top-0 bottom-0 left-4 w-0.5 bg-gray-200"></div>
+                              <ul className="space-y-4">
+                                {order.trackingUpdates.map((update, index) => (
+                                  <li key={index} className="relative pl-10">
+                                    <div className="absolute left-0 top-1 w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                                      {update.status === "approved" ? (
+                                        <Check className="h-4 w-4 text-green-600" />
+                                      ) : update.status === "processing" ? (
+                                        <Package className="h-4 w-4 text-blue-600" />
+                                      ) : update.status === "shipped" || update.status === "in_transit" ? (
+                                        <Truck className="h-4 w-4 text-purple-600" />
+                                      ) : update.status === "delivered" ? (
+                                        <Check className="h-4 w-4 text-green-600" />
+                                      ) : (
+                                        <AlertCircle className="h-4 w-4 text-red-600" />
+                                      )}
+                                    </div>
+                                    <div className="bg-white p-3 rounded-md shadow-sm">
+                                      <p className="text-sm font-medium">
+                                        {update.status.replace("_", " ").toUpperCase()}
+                                      </p>
+                                      <div className="flex justify-between text-xs text-gray-500 mt-1">
+                                        <span>{update.timestamp}</span>
+                                        <span>By: {update.user}</span>
+                                      </div>
+                                      {update.notes && <p className="text-xs text-gray-600 mt-1">{update.notes}</p>}
+                                    </div>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          ) : (
+                            <div className="text-center py-4">
+                              <p className="text-gray-500">No tracking updates available yet</p>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Action buttons */}
+                        <div className="mt-6 flex justify-end space-x-3">
+                          {order.status === "approved" && (
+                            <button className="px-4 py-2 text-sm font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                              Update Status to Shipped
+                            </button>
+                          )}
+                          {order.status === "in_transit" && (
+                            <button className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                              Mark as Delivered
+                            </button>
+                          )}
+                          {order.status === "delivered" && (
+                            <button className="px-4 py-2 text-sm font-medium text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+                              Download Delivery Receipt
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+
+            {/* Right Column - Sidebar */}
+            <div className="space-y-6">
+              {/* Delivery Summary */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="p-5 border-b border-gray-100">
+                  <h3 className="text-lg font-semibold text-gray-900">Delivery Summary</h3>
+                </div>
+                <div className="p-5 space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500">Total Deliveries</span>
+                    <span className="font-medium text-xl">
+                      {purchaseOrders.filter((o) => o.status !== "pending_approval" && o.status !== "rejected").length}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500">In Transit</span>
+                    <span className="font-medium text-xl">
+                      {purchaseOrders.filter((o) => o.status === "in_transit").length}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500">Delivered</span>
+                    <span className="font-medium text-xl">
+                      {purchaseOrders.filter((o) => o.status === "delivered").length}
+                    </span>
+                  </div>
+                  <div className="pt-4 border-t border-gray-300">
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium">On-Time Delivery Rate</span>
+                      <span className="font-bold text-green-600 text-xl">92%</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Upcoming Deliveries */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="p-5 border-b border-gray-100">
+                  <h3 className="text-lg font-semibold text-gray-900">Upcoming Deliveries</h3>
+                </div>
+                <div className="p-5">
+                  <div className="space-y-4">
+                    {purchaseOrders
+                      .filter((o) => o.status === "approved" || o.status === "in_transit")
+                      .slice(0, 3)
+                      .map((order) => (
+                        <div
+                          key={order.id}
+                          className="flex items-center gap-3 p-3 rounded-lg bg-gray-50 border border-gray-100"
+                        >
+                          <div className="rounded-full p-2 bg-blue-100">
+                            <Calendar className="h-4 w-4 text-blue-600" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium truncate">{order.id}</p>
+                            <p className="text-xs text-gray-500">Expected: {order.deliveryDate}</p>
+                          </div>
+                          <OrderStatusBadge status={order.status} />
+                        </div>
+                      ))}
+
+                    {purchaseOrders.filter((o) => o.status === "approved" || o.status === "in_transit").length ===
+                      0 && (
+                      <div className="text-center py-4">
+                        <p className="text-gray-500">No upcoming deliveries</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Actions */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="p-5 border-b border-gray-100">
+                  <h3 className="text-lg font-semibold text-gray-900">Quick Actions</h3>
+                </div>
+                <div className="p-5 space-y-3">
+                  <QuickActionButton label="Track Delivery" icon={<Truck className="w-4 h-4" />} color="blue" />
+                  <QuickActionButton label="Update Status" icon={<Package className="w-4 h-4" />} color="green" />
+                  <QuickActionButton
+                    label="Contact Supplier"
+                    icon={<MessageCircle className="w-4 h-4" />}
+                    color="purple"
+                  />
+                  <QuickActionButton
+                    label="View Delivery Reports"
+                    icon={<FileText className="w-4 h-4" />}
+                    color="amber"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Payments & Invoicing */}
+        {activeTab === "payments-invoicing" && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Left Column - Invoices */}
+            <div className="lg:col-span-2 space-y-6">
+              {/* Stats Overview */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <StatCard
+                  title="Total Invoices"
+                  value={invoices.length.toString()}
+                  change="+8.2%"
+                  icon={<FileText className="w-6 h-6 text-white" />}
+                  color="blue"
+                />
+                <StatCard
+                  title="Unpaid"
+                  value={invoices.filter((i) => i.status === "unpaid").length.toString()}
+                  change="-2.1%"
+                  icon={<AlertCircle className="w-6 h-6 text-white" />}
+                  color="amber"
+                />
+                <StatCard
+                  title="Paid"
+                  value={invoices.filter((i) => i.status === "paid").length.toString()}
+                  change="+12.4%"
+                  icon={<Check className="w-6 h-6 text-white" />}
+                  color="green"
+                />
+                <StatCard
+                  title="Total Amount"
+                  value={`₱${invoices.reduce((sum, invoice) => sum + invoice.amount, 0).toLocaleString()}`}
+                  change="+15.1%"
+                  icon={<DollarSign className="w-6 h-6 text-white" />}
+                  color="purple"
+                />
+              </div>
+
+              {/* Search and Filter */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-between bg-white p-4 shadow-sm rounded-xl">
+                <div className="relative flex-1 max-w-md">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Search className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    className="block w-full pl-10 pr-3 py-2 border bg-white border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                    placeholder="Search by invoice number, PO number, or supplier..."
+                  />
+                </div>
+
+                <div className="flex flex-wrap gap-2">
+                  <select className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+                    <option value="all">All Payment Statuses</option>
+                    <option value="paid">Paid</option>
+                    <option value="partially_paid">Partially Paid</option>
+                    <option value="unpaid">Unpaid</option>
+                  </select>
+
+                  <select className="px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500">
+                    <option value="all">All Departments</option>
+                    <option value="education">Department of Education</option>
+                    <option value="health">Department of Health</option>
+                    <option value="social">Department of Social Welfare</option>
+                    <option value="agriculture">Department of Agriculture</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Invoices Table */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="flex items-center justify-between p-5 border-b border-gray-100">
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">Invoices</h3>
+                    <p className="text-sm text-gray-500 mt-1">Manage and process your invoices</p>
+                  </div>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="text-left bg-green-500">
+                        <th className="px-6 py-4 font-medium text-white text-sm">Invoice #</th>
+                        <th className="px-6 py-4 font-medium text-white text-sm">PO #</th>
+                        <th className="px-6 py-4 font-medium text-white text-sm">Date</th>
+                        <th className="px-6 py-4 font-medium text-white text-sm">Supplier</th>
+                        <th className="px-6 py-4 font-medium text-white text-sm">Department</th>
+                        <th className="px-6 py-4 font-medium text-white text-sm">Amount</th>
+                        <th className="px-6 py-4 font-medium text-white text-sm">Status</th>
+                        <th className="px-6 py-4 font-medium text-white text-sm">Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {invoices.map((invoice) => (
+                        <tr key={invoice.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                          <td className="px-6 py-4 text-sm font-medium">{invoice.id}</td>
+                          <td className="px-6 py-4 text-sm">{invoice.orderId}</td>
+                          <td className="px-6 py-4 text-sm">{invoice.date}</td>
+                          <td className="px-6 py-4 text-sm">{invoice.supplier}</td>
+                          <td className="px-6 py-4 text-sm">{invoice.department}</td>
+                          <td className="px-6 py-4 text-sm font-medium">₱{invoice.amount.toLocaleString()}</td>
+                          <td className="px-6 py-4">
+                            <PaymentStatusBadge status={invoice.status} />
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex space-x-2">
+                              <button
+                                onClick={() => setSelectedInvoice(invoice)}
+                                className="text-blue-600 hover:text-blue-900"
+                                title="View"
+                              >
+                                <Eye className="h-5 w-5" />
+                              </button>
+                              <button className="text-green-600 hover:text-green-900" title="Download">
+                                <Download className="h-5 w-5" />
+                              </button>
+                              {invoice.status !== "paid" && (
+                                <button
+                                  className="text-green-600 hover:text-green-900"
+                                  title="Process Payment"
+                                  onClick={() => {
+                                    const order = purchaseOrders.find((o) => o.id === invoice.orderId)
+                                    if (order) {
+                                      handleProcessPayment(order)
+                                    }
+                                  }}
+                                >
+                                  <CreditCard className="h-5 w-5" />
+                                </button>
+                              )}
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column - Sidebar */}
+            <div className="space-y-6">
+              {/* Payment Summary */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="p-5 border-b border-gray-100">
+                  <h3 className="text-lg font-semibold text-gray-900">Payment Summary</h3>
+                </div>
+                <div className="p-5 space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500">Total Invoices</span>
+                    <span className="font-medium text-xl">{invoices.length}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500">Paid Invoices</span>
+                    <span className="font-medium text-xl">{invoices.filter((i) => i.status === "paid").length}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-500">Unpaid Invoices</span>
+                    <span className="font-medium text-xl">{invoices.filter((i) => i.status === "unpaid").length}</span>
+                  </div>
+                  <div className="pt-4 border-t border-gray-300">
+                    <div className="flex justify-between items-center">
+                      <span className="font-medium">Total Outstanding</span>
+                      <span className="font-bold text-red-600 text-xl">
+                        ₱
+                        {invoices
+                          .filter((i) => i.status === "unpaid")
+                          .reduce((sum, invoice) => sum + invoice.amount, 0)
+                          .toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Payment Methods */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="p-5 border-b border-gray-100">
+                  <h3 className="text-lg font-semibold text-gray-900">Payment Methods</h3>
+                </div>
+                <div className="p-5">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <CreditCard className="h-5 w-5 text-gray-500" />
+                        <span className="font-medium">Bank Transfer</span>
+                      </div>
+                      <span className="text-sm text-gray-500">
+                        {invoices.filter((i) => i.paymentMethod === "bank_transfer").length} Invoices
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <FileText className="h-5 w-5 text-gray-500" />
+                        <span className="font-medium">Government Voucher</span>
+                      </div>
+                      <span className="text-sm text-gray-500">
+                        {invoices.filter((i) => i.paymentMethod === "government_voucher").length} Invoices
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Quick Actions */}
+              <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="p-5 border-b border-gray-100">
+                  <h3 className="text-lg font-semibold text-gray-900">Quick Actions</h3>
+                </div>
+                <div className="p-5 space-y-3">
+                  <QuickActionButton label="Process Payment" icon={<CreditCard className="w-4 h-4" />} color="green" />
+                  <QuickActionButton label="Generate Invoice" icon={<FileText className="w-4 h-4" />} color="blue" />
+                  <QuickActionButton
+                    label="View Payment Reports"
+                    icon={<BarChart3 className="w-4 h-4" />}
+                    color="purple"
+                  />
+                  <QuickActionButton
+                    label="Manage Payment Methods"
+                    icon={<CreditCard className="w-4 h-4" />}
+                    color="amber"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Communication */}
+        {activeTab === "communication" && (
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Left Column - Messages */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+              <div className="p-4 border-b border-gray-100">
+                <h3 className="font-medium">Orders</h3>
+                <div className="mt-2 relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Search className="h-4 w-4 text-gray-400" />
+                  </div>
+                  <input
+                    type="text"
+                    className="block w-full pl-10 pr-3 py-2 text-sm border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                    placeholder="Search orders..."
+                  />
+                </div>
+              </div>
+
+              <div className="overflow-y-auto h-[600px]">
+                {purchaseOrders.map((order) => (
+                  <button
+                    key={order.id}
+                    onClick={() => setSelectedOrder(order)}
+                    className={`w-full text-left p-4 border-b border-gray-100 hover:bg-gray-50 ${
+                      selectedOrder?.id === order.id ? "bg-green-50" : ""
+                    }`}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <h4 className="font-medium">{order.id}</h4>
+                        <p className="text-sm text-gray-500">{order.supplier.name}</p>
+                      </div>
+                      <OrderStatusBadge status={order.status} />
+                    </div>
+                    <div className="mt-2 flex items-center text-sm text-gray-500">
+                      <Clock className="h-4 w-4 mr-1" />
+                      <span>{order.date}</span>
+                    </div>
+                    {order.messages && order.messages.length > 0 && (
+                      <div className="mt-2 flex items-center text-sm text-green-600">
+                        <MessageCircle className="h-4 w-4 mr-1" />
+                        <span>{order.messages.length} messages</span>
+                      </div>
+                    )}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Right Column - Message Thread */}
+            <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col h-[600px]">
+              {selectedOrder ? (
+                <>
+                  <div className="p-4 border-b border-gray-100 flex justify-between items-center">
+                    <div>
+                      <h3 className="font-medium">{selectedOrder.supplier.name}</h3>
+                      <p className="text-sm text-gray-500">Order: {selectedOrder.id}</p>
+                    </div>
+                    <OrderStatusBadge status={selectedOrder.status} />
+                  </div>
+
+                  {/* Messages */}
+                  <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                    {selectedOrder.messages && selectedOrder.messages.length > 0 ? (
+                      selectedOrder.messages.map((message, index) => (
+                        <div
+                          key={index}
+                          className={`flex ${message.sender === "government" ? "justify-end" : "justify-start"}`}
+                        >
+                          <div
+                            className={`max-w-[70%] rounded-lg p-3 ${
+                              message.sender === "government"
+                                ? "bg-green-100 text-green-800"
+                                : "bg-gray-100 text-gray-800"
+                            }`}
+                          >
+                            <p className="text-sm">{message.text}</p>
+                            <p className="text-xs text-gray-500 mt-1">{message.time}</p>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="h-full flex flex-col items-center justify-center text-center p-4">
+                        <div className="bg-gray-100 p-3 rounded-full mb-2">
+                          <MessageCircle className="h-6 w-6 text-gray-400" />
+                        </div>
+                        <h3 className="font-medium">No messages yet</h3>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Start a conversation with the supplier to discuss order details.
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Message Input */}
+                  <div className="p-4 border-t border-gray-100">
+                    <div className="flex space-x-2">
+                      <input
+                        type="text"
+                        value={messageText}
+                        onChange={(e) => setMessageText(e.target.value)}
+                        className="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
+                        placeholder="Type your message..."
+                      />
+                      <button
+                        onClick={handleSendMessage}
+                        className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                      >
+                        <Send className="h-5 w-5" />
+                      </button>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="h-full flex flex-col items-center justify-center text-center p-4">
+                  <div className="bg-gray-100 p-4 rounded-full mb-4">
+                    <User className="h-8 w-8 text-gray-400" />
+                  </div>
+                  <h3 className="text-lg font-medium">Select an order to view messages</h3>
+                  <p className="text-gray-500 mt-2">
+                    Choose an order from the list to view and respond to messages from suppliers.
+                  </p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Order Details Modal */}
+        {selectedOrder && activeTab !== "communication" && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-xl shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+              <div className="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h3 className="text-lg font-semibold">Order Details: {selectedOrder.id}</h3>
+                <button onClick={() => setSelectedOrder(null)} className="text-gray-400 hover:text-gray-500">
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
+              <div className="p-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-500 mb-2">Order Information</h4>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-xs text-gray-500">Order ID</p>
+                          <p className="text-sm font-medium">{selectedOrder.id}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500">Date</p>
+                          <p className="text-sm font-medium">{selectedOrder.date}</p>
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500">Status</p>
+                          <OrderStatusBadge status={selectedOrder.status} />
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-500">Priority</p>
+                          <p className="text-sm font-medium capitalize">{selectedOrder.priority}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-500 mb-2">Supplier Information</h4>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <p className="text-sm font-medium">{selectedOrder.supplier.name}</p>
+                      <p className="text-sm text-gray-500 mt-1">{selectedOrder.supplier.location}</p>
+                      <p className="text-sm text-gray-500 mt-1">Contact: {selectedOrder.supplier.contactPerson}</p>
+                      <p className="text-sm text-gray-500 mt-1">Phone: {selectedOrder.supplier.contactNumber}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-500 mb-2">Department Information</h4>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <p className="text-sm font-medium">{selectedOrder.department}</p>
+                      <p className="text-sm text-gray-500 mt-1">Requested by: {selectedOrder.requestedBy}</p>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-500 mb-2">Delivery Information</h4>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <p className="text-sm font-medium">Delivery Date: {selectedOrder.deliveryDate}</p>
+                      <p className="text-sm text-gray-500 mt-1">Address: {selectedOrder.deliveryAddress}</p>
+                    </div>
+                  </div>
+                </div>
+
+                <h4 className="text-sm font-medium text-gray-500 mb-2">Order Items</h4>
+                <div className="bg-gray-50 p-4 rounded-lg mb-6">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead>
+                      <tr>
+                        <th
+                          scope="col"
+                          className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Item
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Quantity
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Unit Price
+                        </th>
+                        <th
+                          scope="col"
+                          className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        >
+                          Total
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-200">
+                      {selectedOrder.items.map((item) => (
+                        <tr key={item.id} className="border-b border-gray-100">
+                          <td className="px-4 py-3 text-sm">{item.name}</td>
+                          <td className="px-4 py-3 text-sm text-right">
+                            {item.quantity} {item.unit}
+                          </td>
+                          <td className="px-4 py-3 text-sm text-right">₱{item.price.toFixed(2)}</td>
+                          <td className="px-4 py-3 text-sm font-medium text-right">₱{item.total.toFixed(2)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <td colSpan="3" className="px-4 py-3 text-sm font-medium text-gray-900 text-right">
+                          Total
+                        </td>
+                        <td className="px-4 py-3 text-sm font-bold text-gray-900 text-right">
+                          ₱{selectedOrder.total.toFixed(2)}
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+
+                {selectedOrder.notes && (
+                  <div className="mb-6">
+                    <h4 className="text-sm font-medium text-gray-500 mb-2">Notes</h4>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <p className="text-sm">{selectedOrder.notes}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* Action buttons */}
+                <div className="flex justify-between">
+                  <div className="space-x-3">
+                    <button
+                      onClick={() => setSelectedOrder(null)}
+                      className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                    >
+                      Close
+                    </button>
+                    <button className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2">
+                      Print Order
+                    </button>
+                  </div>
+
+                  <div className="space-x-3">
+                    {selectedOrder.status === "pending_approval" && (
+                      <>
+                        <button
+                          onClick={() => handleApproveOrder(selectedOrder.id)}
+                          className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                        >
+                          Approve Order
+                        </button>
+                        <button
+                          onClick={() => handleRejectOrder(selectedOrder.id)}
+                          className="px-4 py-2 text-sm font-medium text-red-600 border border-red-600 rounded-md hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                        >
+                          Reject Order
+                        </button>
+                      </>
+                    )}
+                    {selectedOrder.status === "approved" && (
+                      <button
+                        onClick={() => handleModifyQuantity(selectedOrder.id)}
+                        className="px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 rounded-md hover:bg-blue-100"
+                      >
+                        Modify Quantity
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modify Quantity Modal */}
+        {isModifyQuantityModalOpen && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-xl shadow-lg w-full max-w-lg">
+              <div className="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h3 className="text-lg font-semibold">Modify Quantities</h3>
+                <button
+                  onClick={() => setIsModifyQuantityModalOpen(false)}
+                  className="text-gray-400 hover:text-gray-500"
+                >
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
+              <div className="p-6">
+                <p className="text-sm text-gray-500 mb-4">
+                  Adjust the quantities of items in this order. Please ensure the quantities are accurate before saving.
+                </p>
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="text-left bg-gray-50">
+                        <th className="px-4 py-2 text-sm font-medium text-gray-500">Item</th>
+                        <th className="px-4 py-2 text-sm font-medium text-gray-500">Quantity</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {modifiedItems.map((item, index) => (
+                        <tr key={item.id} className="border-b border-gray-100">
+                          <td className="px-4 py-2 text-sm">{item.name}</td>
+                          <td className="px-4 py-2 text-sm">
+                            <input
+                              type="number"
+                              className="shadow-sm focus:ring-green-500 focus:border-green-500 block w-24 sm:text-sm border-gray-300 rounded-md"
+                              value={item.quantity}
+                              onChange={(e) => {
+                                const newQuantity = Number.parseInt(e.target.value)
+                                setModifiedItems((prevItems) => {
+                                  const updatedItems = [...prevItems]
+                                  updatedItems[index].quantity = newQuantity
+                                  return updatedItems
+                                })
+                              }}
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                <div className="mt-6 flex justify-end space-x-3">
+                  <button
+                    onClick={() => setIsModifyQuantityModalOpen(false)}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSaveModifiedQuantities}
+                    className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Payment Modal */}
+        {isPaymentModalOpen && selectedPaymentOrder && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-xl shadow-lg w-full max-w-lg">
+              <div className="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h3 className="text-lg font-semibold">Process Payment</h3>
+                <button onClick={() => setIsPaymentModalOpen(false)} className="text-gray-400 hover:text-gray-500">
+                  <X className="h-6 w-6" />
+                </button>
+              </div>
+              <div className="p-6">
+                <p className="text-sm text-gray-500 mb-4">
+                  Confirm the payment details for order {selectedPaymentOrder.id} and submit the payment.
+                </p>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-500 mb-1">Order ID</h4>
+                    <p className="text-sm font-medium">{selectedPaymentOrder.id}</p>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-500 mb-1">Supplier</h4>
+                    <p className="text-sm font-medium">{selectedPaymentOrder.supplier.name}</p>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-500 mb-1">Total Amount</h4>
+                    <p className="text-sm font-medium">₱{selectedPaymentOrder.total.toLocaleString()}</p>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-medium text-gray-500 mb-1">Payment Method</h4>
+                    <select className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm rounded-md">
+                      <option value="bank_transfer">Bank Transfer</option>
+                      <option value="government_voucher">Government Voucher</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="mt-6 flex justify-end space-x-3">
+                  <button
+                    onClick={() => setIsPaymentModalOpen(false)}
+                    className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleSubmitPayment}
+                    className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                  >
+                    Submit Payment
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
 
 function OrderStatusBadge({ status }) {
-  let bgColor = ""
-  let textColor = ""
-  let label = ""
+  let bgColor = "bg-gray-100"
+  let textColor = "text-gray-800"
+  let label = "Unknown"
 
   switch (status) {
     case "pending_approval":
@@ -1846,47 +1803,16 @@ function OrderStatusBadge({ status }) {
       label = "Rejected"
       break
     default:
-      bgColor = "bg-gray-100"
-      textColor = "text-gray-800"
       label = status.replace("_", " ")
   }
 
   return <span className={`px-2 py-1 text-xs font-semibold rounded-full ${bgColor} ${textColor}`}>{label}</span>
 }
 
-function PriorityBadge({ priority }) {
-  let bgColor = ""
-  let textColor = ""
-
-  switch (priority) {
-    case "high":
-      bgColor = "bg-red-100"
-      textColor = "text-red-800"
-      break
-    case "medium":
-      bgColor = "bg-yellow-100"
-      textColor = "text-yellow-800"
-      break
-    case "low":
-      bgColor = "bg-green-100"
-      textColor = "text-green-800"
-      break
-    default:
-      bgColor = "bg-gray-100"
-      textColor = "text-gray-800"
-  }
-
-  return (
-    <span className={`px-2 py-1 text-xs font-semibold rounded-full ${bgColor} ${textColor}`}>
-      {priority.charAt(0).toUpperCase() + priority.slice(1)} Priority
-    </span>
-  )
-}
-
 function PaymentStatusBadge({ status }) {
-  let bgColor = ""
-  let textColor = ""
-  let label = ""
+  let bgColor = "bg-gray-100"
+  let textColor = "text-gray-800"
+  let label = "Unknown"
 
   switch (status) {
     case "paid":
@@ -1905,10 +1831,67 @@ function PaymentStatusBadge({ status }) {
       label = "Unpaid"
       break
     default:
-      bgColor = "bg-gray-100"
-      textColor = "text-gray-800"
       label = status.replace("_", " ")
   }
 
   return <span className={`px-2 py-1 text-xs font-semibold rounded-full ${bgColor} ${textColor}`}>{label}</span>
+}
+
+function StatCard({ title, value, change, icon, color }) {
+  const getGradientClass = (color) => {
+    switch (color) {
+      case "green":
+        return "from-green-400 to-green-600"
+      case "blue":
+        return "from-blue-400 to-blue-600"
+      case "purple":
+        return "from-purple-400 to-purple-600"
+      case "amber":
+        return "from-amber-400 to-amber-600"
+      default:
+        return "from-gray-400 to-gray-600"
+    }
+  }
+
+  return (
+    <div
+      className={`bg-gradient-to-r ${getGradientClass(color)} rounded-xl shadow-sm p-4 transition-all hover:shadow-md`}
+    >
+      <div className="flex items-center justify-between mb-2">
+        <h3 className="text-base font-medium text-white">{title}</h3>
+        <div className="p-2 rounded-full bg-white/20">{icon}</div>
+      </div>
+      <div className="text-2xl font-bold text-white">{value}</div>
+      <div className="mt-2">
+        <span className="inline-flex items-center px-2 py-1 text-sm font-medium rounded-full bg-white/20 text-white">
+          {change}
+        </span>
+        <span className="ml-2 text-sm text-white/80">from last month</span>
+      </div>
+    </div>
+  )
+}
+
+function QuickActionButton({ label, icon, color }) {
+  const getColorClass = (color) => {
+    switch (color) {
+      case "green":
+        return "text-green-500 border-green-200 hover:bg-green-50"
+      case "blue":
+        return "text-blue-600 border-blue-200 hover:bg-blue-50"
+      case "purple":
+        return "text-purple-600 border-purple-200 hover:bg-purple-50"
+      case "amber":
+        return "text-amber-600 border-amber-200 hover:bg-amber-50"
+      default:
+        return "text-gray-600 border-gray-200 hover:bg-gray-50"
+    }
+  }
+
+  return (
+    <button className={`flex items-center w-full p-3 rounded-lg border ${getColorClass(color)} transition-colors`}>
+      <div className="mr-3">{icon}</div>
+      <span className="font-medium">{label}</span>
+    </button>
+  )
 }
