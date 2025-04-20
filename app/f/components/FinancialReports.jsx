@@ -1,10 +1,9 @@
-"use client";
+"use client"
 
-import { useState } from "react";
+import { useState, useEffect } from "react"
 import {
   ArrowDownToLine,
   BarChart3,
-  Calendar,
   ChevronDown,
   ChevronRight,
   Clock,
@@ -19,14 +18,33 @@ import {
   Wallet,
   CheckCircle,
   X,
-} from "lucide-react";
+} from "lucide-react"
 
 export default function FinancialReportsPage() {
-  const [activeTab, setActiveTab] = useState("transactions");
-  const [dateRange, setDateRange] = useState("this-month");
-  const [isDateRangeOpen, setIsDateRangeOpen] = useState(false);
-  const [selectedInvoice, setSelectedInvoice] = useState(null);
-  const [userType, setUserType] = useState("farmer"); // farmer or government
+  const [activeTab, setActiveTab] = useState("transactions")
+  const [dateRange, setDateRange] = useState("this-month")
+  const [isDateRangeOpen, setIsDateRangeOpen] = useState(false)
+  const [selectedInvoice, setSelectedInvoice] = useState(null)
+  const [userType, setUserType] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Effect to get user role from localStorage
+  useEffect(() => {
+    // Get the user role from localStorage
+    const storedUserRole = localStorage.getItem("userRole")
+    console.log("Detected user role from localStorage:", storedUserRole)
+
+    // Set the user type based on the stored role
+    if (storedUserRole === "farmer" || storedUserRole === "government") {
+      setUserType(storedUserRole)
+    } else {
+      // Default to farmer if role is not properly set
+      console.warn("User role not found or invalid in localStorage, defaulting to farmer")
+      setUserType("farmer")
+    }
+
+    setIsLoading(false)
+  }, [])
 
   // Sample data for transactions
   const transactions = [
@@ -90,7 +108,7 @@ export default function FinancialReportsPage() {
       to: "FastTrack Logistics",
       reference: "REF-567890",
     },
-  ];
+  ]
 
   // Sample data for invoices
   const invoices = [
@@ -139,9 +157,7 @@ export default function FinancialReportsPage() {
       amount: 17000.0,
       status: "paid",
       buyer: "Department of Social Welfare",
-      items: [
-        { name: "Fresh Milk (1L)", quantity: 200, price: 85.0, total: 17000.0 },
-      ],
+      items: [{ name: "Fresh Milk (1L)", quantity: 200, price: 85.0, total: 17000.0 }],
       subtotal: 17000.0,
       tax: 0,
       total: 17000.0,
@@ -166,7 +182,7 @@ export default function FinancialReportsPage() {
       tax: 0,
       total: 13500.0,
     },
-  ];
+  ]
 
   // Sample data for earnings (farmer)
   const earningsData = {
@@ -200,7 +216,7 @@ export default function FinancialReportsPage() {
       { name: "Department of Agriculture", amount: 13500 },
       { name: "Department of Education", amount: 5550 },
     ],
-  };
+  }
 
   // Sample data for budget (government)
   const budgetData = {
@@ -234,7 +250,7 @@ export default function FinancialReportsPage() {
       { name: "Mountain Fresh Produce", amount: 98000 },
       { name: "Valley Dairy Cooperative", amount: 75000 },
     ],
-  };
+  }
 
   // Sample data for payment methods
   const paymentMethods = [
@@ -259,7 +275,19 @@ export default function FinancialReportsPage() {
       details: "Vendor ID: FARM-12345",
       isDefault: false,
     },
-  ];
+  ]
+
+  // Show loading state while determining user type
+  if (isLoading) {
+    return (
+      <div className="flex-1 bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading financial reports...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex-1 bg-gray-50">
@@ -268,23 +296,12 @@ export default function FinancialReportsPage() {
         <div className="mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
-                Financial Reports
-              </h1>
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Financial Reports</h1>
               <p className="mt-1 text-sm text-gray-500">
-                Track transactions, manage invoices, and analyze financial
-                performance.
+                Track transactions, manage invoices, and analyze financial performance.
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <select
-                value={userType}
-                onChange={(e) => setUserType(e.target.value)}
-                className="px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-green-500 focus:border-green-500"
-              >
-                <option value="farmer">Farmer View</option>
-                <option value="government">Government Buyer View</option>
-              </select>
               <button className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-gray-700 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors shadow-sm">
                 <Download size={16} />
                 Export Reports
@@ -342,62 +359,6 @@ export default function FinancialReportsPage() {
           </div>
         </div>
 
-        {/* Date Filter */}
-        {/* <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
-          <div className="flex items-center gap-2">
-            <Calendar className="h-5 w-5 text-gray-500" />
-            <span className="text-sm font-medium text-gray-700">
-              Filter by date
-            </span>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <button
-              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                dateRange === "this-month"
-                  ? "bg-green-500 text-white"
-                  : "text-gray-700 bg-white border border-gray-200 hover:bg-gray-50"
-              }`}
-              onClick={() => setDateRange("this-month")}
-            >
-              This Month
-            </button>
-            <button
-              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                dateRange === "last-month"
-                  ? "bg-green-500 text-white"
-                  : "text-gray-700 bg-white border border-gray-200 hover:bg-gray-50"
-              }`}
-              onClick={() => setDateRange("last-month")}
-            >
-              Last Month
-            </button>
-            <button
-              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                dateRange === "last-3-months"
-                  ? "bg-green-500 text-white"
-                  : "text-gray-700 bg-white border border-gray-200 hover:bg-gray-50"
-              }`}
-              onClick={() => setDateRange("last-3-months")}
-            >
-              Last 3 Months
-            </button>
-            <button
-              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
-                dateRange === "this-year"
-                  ? "bg-green-500 text-white"
-                  : "text-gray-700 bg-white border border-gray-200 hover:bg-gray-50"
-              }`}
-              onClick={() => setDateRange("this-year")}
-            >
-              This Year
-            </button>
-            <button className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium text-gray-700 bg-white border border-gray-200 rounded-md hover:bg-gray-50 transition-colors">
-              <Filter size={14} />
-              Custom
-            </button>
-          </div>
-        </div> */}
-
         {/* Transaction History */}
         {activeTab === "transactions" && (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -428,12 +389,8 @@ export default function FinancialReportsPage() {
                 <StatCard
                   title="Net Balance"
                   value={`₱${(
-                    transactions
-                      .filter((t) => t.type === "income")
-                      .reduce((sum, t) => sum + t.amount, 0) -
-                    transactions
-                      .filter((t) => t.type === "expense")
-                      .reduce((sum, t) => sum + t.amount, 0)
+                    transactions.filter((t) => t.type === "income").reduce((sum, t) => sum + t.amount, 0) -
+                      transactions.filter((t) => t.type === "expense").reduce((sum, t) => sum + t.amount, 0)
                   ).toLocaleString()}`}
                   change="+18.4%"
                   icon={<Wallet className="w-6 h-6 text-white" />}
@@ -476,12 +433,8 @@ export default function FinancialReportsPage() {
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="flex items-center justify-between p-5 border-b border-gray-100">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      Recent Transactions
-                    </h3>
-                    <p className="text-sm text-gray-500 mt-1">
-                      View and manage your financial transactions
-                    </p>
+                    <h3 className="text-lg font-semibold text-gray-900">Recent Transactions</h3>
+                    <p className="text-sm text-gray-500 mt-1">View and manage your financial transactions</p>
                   </div>
 
                   <button className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
@@ -494,24 +447,12 @@ export default function FinancialReportsPage() {
                   <table className="w-full border-collapse">
                     <thead>
                       <tr className="text-left bg-green-500">
-                        <th className="px-6 py-4 font-medium text-white text-sm">
-                          Transaction ID
-                        </th>
-                        <th className="px-6 py-4 font-medium text-white text-sm">
-                          Date
-                        </th>
-                        <th className="px-6 py-4 font-medium text-white text-sm">
-                          Description
-                        </th>
-                        <th className="px-6 py-4 font-medium text-white text-sm">
-                          Amount
-                        </th>
-                        <th className="px-6 py-4 font-medium text-white text-sm">
-                          Status
-                        </th>
-                        <th className="px-6 py-4 font-medium text-white text-sm">
-                          Actions
-                        </th>
+                        <th className="px-6 py-4 font-medium text-white text-sm">Transaction ID</th>
+                        <th className="px-6 py-4 font-medium text-white text-sm">Date</th>
+                        <th className="px-6 py-4 font-medium text-white text-sm">Description</th>
+                        <th className="px-6 py-4 font-medium text-white text-sm">Amount</th>
+                        <th className="px-6 py-4 font-medium text-white text-sm">Status</th>
+                        <th className="px-6 py-4 font-medium text-white text-sm">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -520,24 +461,15 @@ export default function FinancialReportsPage() {
                           key={transaction.id}
                           className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
                         >
-                          <td className="px-6 py-4 text-sm font-medium">
-                            {transaction.id}
-                          </td>
-                          <td className="px-6 py-4 text-sm">
-                            {transaction.date}
-                          </td>
-                          <td className="px-6 py-4 text-sm">
-                            {transaction.description}
-                          </td>
+                          <td className="px-6 py-4 text-sm font-medium">{transaction.id}</td>
+                          <td className="px-6 py-4 text-sm">{transaction.date}</td>
+                          <td className="px-6 py-4 text-sm">{transaction.description}</td>
                           <td
                             className={`px-6 py-4 text-sm font-medium ${
-                              transaction.type === "income"
-                                ? "text-green-500"
-                                : "text-red-600"
+                              transaction.type === "income" ? "text-green-500" : "text-red-600"
                             }`}
                           >
-                            {transaction.type === "income" ? "+" : "-"}₱
-                            {transaction.amount.toLocaleString()}
+                            {transaction.type === "income" ? "+" : "-"}₱{transaction.amount.toLocaleString()}
                           </td>
                           <td className="px-5 py-4">
                             <span
@@ -545,12 +477,11 @@ export default function FinancialReportsPage() {
                                 transaction.status === "completed"
                                   ? "bg-green-100 text-green-600"
                                   : transaction.status === "pending"
-                                  ? "bg-yellow-100 text-yellow-800"
-                                  : "bg-red-100 text-red-800"
+                                    ? "bg-yellow-100 text-yellow-800"
+                                    : "bg-red-100 text-red-800"
                               }`}
                             >
-                              {transaction.status.charAt(0).toUpperCase() +
-                                transaction.status.slice(1)}
+                              {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
                             </span>
                           </td>
                           <td className="px-5 py-4">
@@ -571,9 +502,7 @@ export default function FinancialReportsPage() {
               {/* Transaction Summary */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-5 border-b border-gray-100">
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    Transaction Summary
-                  </h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Transaction Summary</h3>
                 </div>
                 <div className="p-5 space-y-4">
                   <div className="flex justify-between">
@@ -602,12 +531,8 @@ export default function FinancialReportsPage() {
                       <span className="font-bold text-green-500">
                         ₱
                         {(
-                          transactions
-                            .filter((t) => t.type === "income")
-                            .reduce((sum, t) => sum + t.amount, 0) -
-                          transactions
-                            .filter((t) => t.type === "expense")
-                            .reduce((sum, t) => sum + t.amount, 0)
+                          transactions.filter((t) => t.type === "income").reduce((sum, t) => sum + t.amount, 0) -
+                          transactions.filter((t) => t.type === "expense").reduce((sum, t) => sum + t.amount, 0)
                         ).toLocaleString()}
                       </span>
                     </div>
@@ -618,22 +543,14 @@ export default function FinancialReportsPage() {
               {/* Payment Methods */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-5 border-b border-gray-100">
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    Payment Methods
-                  </h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Payment Methods</h3>
                 </div>
                 <div className="p-5 space-y-4">
-                  {Array.from(
-                    new Set(transactions.map((t) => t.paymentMethod))
-                  ).map((method) => (
+                  {Array.from(new Set(transactions.map((t) => t.paymentMethod))).map((method) => (
                     <div key={method} className="flex justify-between">
                       <span className="text-gray-500">{method}</span>
                       <span className="font-medium">
-                        {
-                          transactions.filter((t) => t.paymentMethod === method)
-                            .length
-                        }{" "}
-                        transactions
+                        {transactions.filter((t) => t.paymentMethod === method).length} transactions
                       </span>
                     </div>
                   ))}
@@ -649,13 +566,7 @@ export default function FinancialReportsPage() {
                 </div>
                 <div className="p-5 space-y-4">
                   {userType === "farmer"
-                    ? Array.from(
-                        new Set(
-                          transactions
-                            .filter((t) => t.type === "income")
-                            .map((t) => t.from)
-                        )
-                      )
+                    ? Array.from(new Set(transactions.filter((t) => t.type === "income").map((t) => t.from)))
                         .slice(0, 4)
                         .map((buyer) => (
                           <div key={buyer} className="flex justify-between">
@@ -663,21 +574,13 @@ export default function FinancialReportsPage() {
                             <span className="font-medium">
                               ₱
                               {transactions
-                                .filter(
-                                  (t) => t.from === buyer && t.type === "income"
-                                )
+                                .filter((t) => t.from === buyer && t.type === "income")
                                 .reduce((sum, t) => sum + t.amount, 0)
                                 .toLocaleString()}
                             </span>
                           </div>
                         ))
-                    : Array.from(
-                        new Set(
-                          transactions
-                            .filter((t) => t.type === "expense")
-                            .map((t) => t.to)
-                        )
-                      )
+                    : Array.from(new Set(transactions.filter((t) => t.type === "expense").map((t) => t.to)))
                         .slice(0, 4)
                         .map((supplier) => (
                           <div key={supplier} className="flex justify-between">
@@ -685,10 +588,7 @@ export default function FinancialReportsPage() {
                             <span className="font-medium">
                               ₱
                               {transactions
-                                .filter(
-                                  (t) =>
-                                    t.to === supplier && t.type === "expense"
-                                )
+                                .filter((t) => t.to === supplier && t.type === "expense")
                                 .reduce((sum, t) => sum + t.amount, 0)
                                 .toLocaleString()}
                             </span>
@@ -747,28 +647,17 @@ export default function FinancialReportsPage() {
                   <div className="h-80">
                     <div className="h-full flex items-end space-x-2">
                       {earningsData.monthlyEarnings.map((month) => (
-                        <div
-                          key={month.month}
-                          className="flex-1 flex flex-col items-center"
-                        >
+                        <div key={month.month} className="flex-1 flex flex-col items-center">
                           <div
                             className="w-full bg-green-100 hover:bg-green-200 rounded-t"
                             style={{
                               height: `${
-                                (month.amount /
-                                  Math.max(
-                                    ...earningsData.monthlyEarnings.map(
-                                      (m) => m.amount
-                                    )
-                                  )) *
-                                100
+                                (month.amount / Math.max(...earningsData.monthlyEarnings.map((m) => m.amount))) * 100
                               }%`,
                               minHeight: month.amount > 0 ? "10px" : "0",
                             }}
                           ></div>
-                          <div className="text-xs mt-2 text-gray-600">
-                            {month.month}
-                          </div>
+                          <div className="text-xs mt-2 text-gray-600">{month.month}</div>
                         </div>
                       ))}
                     </div>
@@ -778,30 +667,20 @@ export default function FinancialReportsPage() {
                 {/* Top Products and Buyers */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <h3 className="text-lg font-semibold mb-4">
-                      Top Products by Revenue
-                    </h3>
+                    <h3 className="text-lg font-semibold mb-4">Top Products by Revenue</h3>
                     <div className="space-y-4">
                       {earningsData.topProducts.map((product, index) => (
                         <div key={index} className="flex items-center overflow-hidden">
                           <div className="w-full">
                             <div className="flex justify-between mb-1">
-                              <span className="text-sm font-medium">
-                                {product.name}
-                              </span>
-                              <span className="text-sm font-medium">
-                                ₱{product.amount.toLocaleString()}
-                              </span>
+                              <span className="text-sm font-medium">{product.name}</span>
+                              <span className="text-sm font-medium">₱{product.amount.toLocaleString()}</span>
                             </div>
                             <div className="w-full bg-gray-200 rounded-full h-2">
                               <div
                                 className="bg-green-500 h-2 rounded-full"
                                 style={{
-                                  width: `${
-                                    (product.amount /
-                                      earningsData.topProducts[0].amount) *
-                                    100
-                                  }%`,
+                                  width: `${(product.amount / earningsData.topProducts[0].amount) * 100}%`,
                                 }}
                               ></div>
                             </div>
@@ -818,22 +697,14 @@ export default function FinancialReportsPage() {
                         <div key={index} className="flex items-center">
                           <div className="w-full">
                             <div className="flex justify-between mb-1">
-                              <span className="text-sm font-medium">
-                                {buyer.name}
-                              </span>
-                              <span className="text-sm font-medium">
-                                ₱{buyer.amount.toLocaleString()}
-                              </span>
+                              <span className="text-sm font-medium">{buyer.name}</span>
+                              <span className="text-sm font-medium">₱{buyer.amount.toLocaleString()}</span>
                             </div>
                             <div className="w-full bg-gray-200 rounded-full h-2">
                               <div
                                 className="bg-blue-500 h-2 rounded-full"
                                 style={{
-                                  width: `${
-                                    (buyer.amount /
-                                      earningsData.topBuyers[0].amount) *
-                                    100
-                                  }%`,
+                                  width: `${(buyer.amount / earningsData.topBuyers[0].amount) * 100}%`,
                                 }}
                               ></div>
                             </div>
@@ -881,41 +752,27 @@ export default function FinancialReportsPage() {
 
                 {/* Budget Progress */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                  <h3 className="text-lg font-semibold mb-4">
-                    Budget Allocation & Spending
-                  </h3>
+                  <h3 className="text-lg font-semibold mb-4">Budget Allocation & Spending</h3>
                   <div className="space-y-6">
                     {budgetData.categories.map((category, index) => (
                       <div key={index}>
                         <div className="flex justify-between mb-1">
-                          <span className="text-sm font-medium">
-                            {category.name}
-                          </span>
+                          <span className="text-sm font-medium">{category.name}</span>
                           <span className="text-sm text-gray-500">
-                            ₱{category.spent.toLocaleString()} / ₱
-                            {category.budget.toLocaleString()}
+                            ₱{category.spent.toLocaleString()} / ₱{category.budget.toLocaleString()}
                           </span>
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-2.5 mb-1">
                           <div
                             className="bg-green-500 h-2.5 rounded-full"
                             style={{
-                              width: `${
-                                (category.spent / category.budget) * 100
-                              }%`,
+                              width: `${(category.spent / category.budget) * 100}%`,
                             }}
                           ></div>
                         </div>
                         <div className="flex justify-between text-xs text-gray-500">
-                          <span>
-                            {((category.spent / category.budget) * 100).toFixed(
-                              1
-                            )}
-                            % used
-                          </span>
-                          <span>
-                            ₱{category.remaining.toLocaleString()} remaining
-                          </span>
+                          <span>{((category.spent / category.budget) * 100).toFixed(1)}% used</span>
+                          <span>₱{category.remaining.toLocaleString()} remaining</span>
                         </div>
                       </div>
                     ))}
@@ -926,9 +783,7 @@ export default function FinancialReportsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                     <div className="flex justify-between items-center mb-6">
-                      <h3 className="text-lg font-semibold">
-                        Monthly Spending
-                      </h3>
+                      <h3 className="text-lg font-semibold">Monthly Spending</h3>
                       <select className="px-3 py-1 border border-gray-300 rounded-md text-sm">
                         <option value="2023">2023</option>
                         <option value="2022">2022</option>
@@ -937,28 +792,17 @@ export default function FinancialReportsPage() {
                     <div className="h-64">
                       <div className="h-full flex items-end space-x-2">
                         {budgetData.monthlySpending.map((month) => (
-                          <div
-                            key={month.month}
-                            className="flex-1 flex flex-col items-center"
-                          >
+                          <div key={month.month} className="flex-1 flex flex-col items-center">
                             <div
                               className="w-full bg-blue-100 hover:bg-blue-200 rounded-t"
                               style={{
                                 height: `${
-                                  (month.amount /
-                                    Math.max(
-                                      ...budgetData.monthlySpending.map(
-                                        (m) => m.amount
-                                      )
-                                    )) *
-                                  100
+                                  (month.amount / Math.max(...budgetData.monthlySpending.map((m) => m.amount))) * 100
                                 }%`,
                                 minHeight: month.amount > 0 ? "10px" : "0",
                               }}
                             ></div>
-                            <div className="text-xs mt-2 text-gray-600">
-                              {month.month}
-                            </div>
+                            <div className="text-xs mt-2 text-gray-600">{month.month}</div>
                           </div>
                         ))}
                       </div>
@@ -966,30 +810,20 @@ export default function FinancialReportsPage() {
                   </div>
 
                   <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <h3 className="text-lg font-semibold mb-4">
-                      Top Suppliers
-                    </h3>
+                    <h3 className="text-lg font-semibold mb-4">Top Suppliers</h3>
                     <div className="space-y-4">
                       {budgetData.topSuppliers.map((supplier, index) => (
                         <div key={index} className="flex items-center">
                           <div className="w-full">
                             <div className="flex justify-between mb-1">
-                              <span className="text-sm font-medium">
-                                {supplier.name}
-                              </span>
-                              <span className="text-sm font-medium">
-                                ₱{supplier.amount.toLocaleString()}
-                              </span>
+                              <span className="text-sm font-medium">{supplier.name}</span>
+                              <span className="text-sm font-medium">₱{supplier.amount.toLocaleString()}</span>
                             </div>
                             <div className="w-full bg-gray-200 rounded-full h-2">
                               <div
                                 className="bg-green-500 h-2 rounded-full"
                                 style={{
-                                  width: `${
-                                    (supplier.amount /
-                                      budgetData.topSuppliers[0].amount) *
-                                    100
-                                  }%`,
+                                  width: `${(supplier.amount / budgetData.topSuppliers[0].amount) * 100}%`,
                                 }}
                               ></div>
                             </div>
@@ -1052,12 +886,8 @@ export default function FinancialReportsPage() {
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="flex items-center justify-between p-5 border-b border-gray-100">
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      Invoices & Receipts
-                    </h3>
-                    <p className="text-sm text-gray-500 mt-1">
-                      Manage your invoices and payment receipts
-                    </p>
+                    <h3 className="text-lg font-semibold text-gray-900">Invoices & Receipts</h3>
+                    <p className="text-sm text-gray-500 mt-1">Manage your invoices and payment receipts</p>
                   </div>
 
                   <button className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
@@ -1070,64 +900,38 @@ export default function FinancialReportsPage() {
                   <table className="w-full border-collapse">
                     <thead>
                       <tr className="text-left bg-green-500">
-                        <th className="px-6 py-4 font-medium text-white text-sm">
-                          Invoice ID
-                        </th>
-                        <th className="px-6 py-4 font-medium text-white text-sm">
-                          Order ID
-                        </th>
-                        <th className="px-6 py-4 font-medium text-white text-sm">
-                          Date
-                        </th>
-                        <th className="px-6 py-4 font-medium text-white text-sm">
-                          Due Date
-                        </th>
+                        <th className="px-6 py-4 font-medium text-white text-sm">Invoice ID</th>
+                        <th className="px-6 py-4 font-medium text-white text-sm">Order ID</th>
+                        <th className="px-6 py-4 font-medium text-white text-sm">Date</th>
+                        <th className="px-6 py-4 font-medium text-white text-sm">Due Date</th>
                         <th className="px-6 py-4 font-medium text-white text-sm">
                           {userType === "farmer" ? "Buyer" : "Supplier"}
                         </th>
-                        <th className="px-6 py-4 font-medium text-white text-sm">
-                          Amount
-                        </th>
-                        <th className="px-6 py-4 font-medium text-white text-sm">
-                          Status
-                        </th>
-                        <th className="px-6 py-4 font-medium text-white text-sm">
-                          Actions
-                        </th>
+                        <th className="px-6 py-4 font-medium text-white text-sm">Amount</th>
+                        <th className="px-6 py-4 font-medium text-white text-sm">Status</th>
+                        <th className="px-6 py-4 font-medium text-white text-sm">Actions</th>
                       </tr>
                     </thead>
                     <tbody>
                       {invoices.map((invoice) => (
-                        <tr
-                          key={invoice.id}
-                          className="border-b border-gray-100 hover:bg-gray-50 transition-colors"
-                        >
-                          <td className="px-5 py-4 text-sm font-medium">
-                            {invoice.id}
-                          </td>
-                          <td className="px-5 py-4 text-sm">
-                            {invoice.orderId}
-                          </td>
+                        <tr key={invoice.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                          <td className="px-5 py-4 text-sm font-medium">{invoice.id}</td>
+                          <td className="px-5 py-4 text-sm">{invoice.orderId}</td>
                           <td className="px-5 py-4 text-sm">{invoice.date}</td>
-                          <td className="px-5 py-4 text-sm">
-                            {invoice.dueDate}
-                          </td>
+                          <td className="px-5 py-4 text-sm">{invoice.dueDate}</td>
                           <td className="px-5 py-4 text-sm">{invoice.buyer}</td>
-                          <td className="px-5 py-4 text-sm font-medium">
-                            ₱{invoice.amount.toLocaleString()}
-                          </td>
+                          <td className="px-5 py-4 text-sm font-medium">₱{invoice.amount.toLocaleString()}</td>
                           <td className="px-5 py-4">
                             <span
                               className={`px-2 py-1 text-xs font-semibold rounded-full ${
                                 invoice.status === "paid"
                                   ? "bg-green-100 text-green-600"
                                   : invoice.status === "pending"
-                                  ? "bg-yellow-100 text-yellow-800"
-                                  : "bg-red-100 text-red-800"
+                                    ? "bg-yellow-100 text-yellow-800"
+                                    : "bg-red-100 text-red-800"
                               }`}
                             >
-                              {invoice.status.charAt(0).toUpperCase() +
-                                invoice.status.slice(1)}
+                              {invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}
                             </span>
                           </td>
                           <td className="px-5 py-4">
@@ -1139,10 +943,7 @@ export default function FinancialReportsPage() {
                               >
                                 <FileText className="h-5 w-5" />
                               </button>
-                              <button
-                                className="text-green-500 hover:text-green-900"
-                                title="Download"
-                              >
+                              <button className="text-green-500 hover:text-green-900" title="Download">
                                 <Download className="h-5 w-5" />
                               </button>
                             </div>
@@ -1160,9 +961,7 @@ export default function FinancialReportsPage() {
               {/* Invoice Summary */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-5 border-b border-gray-100">
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    Invoice Summary
-                  </h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Invoice Summary</h3>
                 </div>
                 <div className="p-5 space-y-4">
                   <div className="flex justify-between">
@@ -1171,24 +970,17 @@ export default function FinancialReportsPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-500">Paid Invoices</span>
-                    <span className="font-medium">
-                      {invoices.filter((i) => i.status === "paid").length}
-                    </span>
+                    <span className="font-medium">{invoices.filter((i) => i.status === "paid").length}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-500">Pending Invoices</span>
-                    <span className="font-medium">
-                      {invoices.filter((i) => i.status === "pending").length}
-                    </span>
+                    <span className="font-medium">{invoices.filter((i) => i.status === "pending").length}</span>
                   </div>
                   <div className="pt-4 border-t border-gray-300">
                     <div className="flex justify-between">
                       <span className="font-medium">Total Amount</span>
                       <span className="font-bold text-green-500">
-                        ₱
-                        {invoices
-                          .reduce((sum, i) => sum + i.amount, 0)
-                          .toLocaleString()}
+                        ₱{invoices.reduce((sum, i) => sum + i.amount, 0).toLocaleString()}
                       </span>
                     </div>
                   </div>
@@ -1198,9 +990,7 @@ export default function FinancialReportsPage() {
               {/* Recent Activity */}
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-5 border-b border-gray-100">
-                  <h3 className="text-lg font-semibold text-gray-900">
-                    Recent Activity
-                  </h3>
+                  <h3 className="text-lg font-semibold text-gray-900">Recent Activity</h3>
                 </div>
                 <div className="p-5 space-y-4">
                   <div className="flex items-center p-3 bg-gray-50 rounded-lg">
@@ -1208,46 +998,30 @@ export default function FinancialReportsPage() {
                       <FileText className="h-5 w-5 text-green-500" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium">
-                        Invoice #{invoices[0].id} was generated
-                      </p>
+                      <p className="text-sm font-medium">Invoice #{invoices[0].id} was generated</p>
                       <p className="text-xs text-gray-500">Today at 10:30 AM</p>
                     </div>
-                    <span className="text-sm font-medium text-green-500">
-                      ₱{invoices[0].amount.toLocaleString()}
-                    </span>
+                    <span className="text-sm font-medium text-green-500">₱{invoices[0].amount.toLocaleString()}</span>
                   </div>
                   <div className="flex items-center p-3 bg-gray-50 rounded-lg">
                     <div className="p-2 bg-blue-100 rounded-full mr-3">
                       <Download className="h-5 w-5 text-blue-600" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium">
-                        Invoice #{invoices[1].id} was downloaded
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        Yesterday at 3:45 PM
-                      </p>
+                      <p className="text-sm font-medium">Invoice #{invoices[1].id} was downloaded</p>
+                      <p className="text-xs text-gray-500">Yesterday at 3:45 PM</p>
                     </div>
-                    <span className="text-sm font-medium text-green-500">
-                      ₱{invoices[1].amount.toLocaleString()}
-                    </span>
+                    <span className="text-sm font-medium text-green-500">₱{invoices[1].amount.toLocaleString()}</span>
                   </div>
                   <div className="flex items-center p-3 bg-gray-50 rounded-lg">
                     <div className="p-2 bg-green-100 rounded-full mr-3">
                       <DollarSign className="h-5 w-5 text-green-500" />
                     </div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium">
-                        Payment received for Invoice #{invoices[2].id}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        Oct 12, 2023 at 2:15 PM
-                      </p>
+                      <p className="text-sm font-medium">Payment received for Invoice #{invoices[2].id}</p>
+                      <p className="text-xs text-gray-500">Oct 12, 2023 at 2:15 PM</p>
                     </div>
-                    <span className="text-sm font-medium text-green-500">
-                      ₱{invoices[2].amount.toLocaleString()}
-                    </span>
+                    <span className="text-sm font-medium text-green-500">₱{invoices[2].amount.toLocaleString()}</span>
                   </div>
                 </div>
                 <div className="px-6 py-4 border-t border-gray-100">
@@ -1277,9 +1051,7 @@ export default function FinancialReportsPage() {
                 {paymentMethods.map((method) => (
                   <div
                     key={method.id}
-                    className={`p-4 border rounded-lg ${
-                      method.isDefault ? "border-green-500" : "border-gray-200"
-                    }`}
+                    className={`p-4 border rounded-lg ${method.isDefault ? "border-green-500" : "border-gray-200"}`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center">
@@ -1288,8 +1060,8 @@ export default function FinancialReportsPage() {
                             method.type === "Bank Account"
                               ? "bg-blue-100"
                               : method.type === "Digital Wallet"
-                              ? "bg-purple-100"
-                              : "bg-green-100"
+                                ? "bg-purple-100"
+                                : "bg-green-100"
                           } mr-4`}
                         >
                           {method.type === "Bank Account" ? (
@@ -1302,9 +1074,7 @@ export default function FinancialReportsPage() {
                         </div>
                         <div>
                           <p className="font-medium">{method.name}</p>
-                          <p className="text-sm text-gray-500">
-                            {method.details}
-                          </p>
+                          <p className="text-sm text-gray-500">{method.details}</p>
                           {method.isDefault && (
                             <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-600 mt-1">
                               Default
@@ -1313,19 +1083,13 @@ export default function FinancialReportsPage() {
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <button className="text-sm text-gray-600 hover:text-gray-900">
-                          Edit
-                        </button>
+                        <button className="text-sm text-gray-600 hover:text-gray-900">Edit</button>
                         {!method.isDefault && (
                           <>
                             <span className="text-gray-300">|</span>
-                            <button className="text-sm text-gray-600 hover:text-gray-900">
-                              Set as Default
-                            </button>
+                            <button className="text-sm text-gray-600 hover:text-gray-900">Set as Default</button>
                             <span className="text-gray-300">|</span>
-                            <button className="text-sm text-red-600 hover:text-red-900">
-                              Remove
-                            </button>
+                            <button className="text-sm text-red-600 hover:text-red-900">Remove</button>
                           </>
                         )}
                       </div>
@@ -1343,8 +1107,8 @@ export default function FinancialReportsPage() {
                   <h3 className="text-lg font-medium">Bank Transfers</h3>
                 </div>
                 <p className="text-gray-600 text-sm mb-4">
-                  Connect your bank account to receive payments directly. Bank
-                  transfers typically take 1-3 business days to process.
+                  Connect your bank account to receive payments directly. Bank transfers typically take 1-3 business
+                  days to process.
                 </p>
                 <ul className="text-sm text-gray-600 space-y-2">
                   <li className="flex items-center">
@@ -1368,8 +1132,8 @@ export default function FinancialReportsPage() {
                   <h3 className="text-lg font-medium">Digital Payments</h3>
                 </div>
                 <p className="text-gray-600 text-sm mb-4">
-                  Connect your digital wallet for instant payments. Receive
-                  funds immediately and transfer to your bank account anytime.
+                  Connect your digital wallet for instant payments. Receive funds immediately and transfer to your bank
+                  account anytime.
                 </p>
                 <ul className="text-sm text-gray-600 space-y-2">
                   <li className="flex items-center">
@@ -1393,8 +1157,8 @@ export default function FinancialReportsPage() {
                   <h3 className="text-lg font-medium">Government Vouchers</h3>
                 </div>
                 <p className="text-gray-600 text-sm mb-4">
-                  Register to accept government procurement vouchers. Ideal for
-                  farmers working with government agencies.
+                  Register to accept government procurement vouchers. Ideal for farmers working with government
+                  agencies.
                 </p>
                 <ul className="text-sm text-gray-600 space-y-2">
                   <li className="flex items-center">
@@ -1420,83 +1184,54 @@ export default function FinancialReportsPage() {
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
             <div className="bg-white rounded-xl shadow-lg w-full max-w-4xl max-h-[90vh] overflow-y-auto">
               <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-                <h3 className="text-lg font-semibold">
-                  Invoice: {selectedInvoice.id}
-                </h3>
-                <button
-                  onClick={() => setSelectedInvoice(null)}
-                  className="text-gray-400 hover:text-gray-500"
-                >
+                <h3 className="text-lg font-semibold">Invoice: {selectedInvoice.id}</h3>
+                <button onClick={() => setSelectedInvoice(null)} className="text-gray-400 hover:text-gray-500">
                   <X className="h-6 w-6" />
                 </button>
               </div>
               <div className="p-6">
                 <div className="grid grid-cols-2 gap-6 mb-6">
                   <div>
-                    <h4 className="text-sm font-medium text-gray-500 mb-2">
-                      From
-                    </h4>
+                    <h4 className="text-sm font-medium text-gray-500 mb-2">From</h4>
                     <p className="font-medium">Green Farms</p>
-                    <p className="text-sm text-gray-500">
-                      123 Farm Road, Laguna
-                    </p>
+                    <p className="text-sm text-gray-500">123 Farm Road, Laguna</p>
                     <p className="text-sm text-gray-500">Philippines</p>
-                    <p className="text-sm text-gray-500">
-                      contact@greenfarms.com
-                    </p>
+                    <p className="text-sm text-gray-500">contact@greenfarms.com</p>
                   </div>
                   <div>
-                    <h4 className="text-sm font-medium text-gray-500 mb-2">
-                      To
-                    </h4>
+                    <h4 className="text-sm font-medium text-gray-500 mb-2">To</h4>
                     <p className="font-medium">{selectedInvoice.buyer}</p>
-                    <p className="text-sm text-gray-500">
-                      456 Government Ave, Manila
-                    </p>
+                    <p className="text-sm text-gray-500">456 Government Ave, Manila</p>
                     <p className="text-sm text-gray-500">Philippines</p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-2 gap-6 mb-6">
                   <div>
-                    <h4 className="text-sm font-medium text-gray-500 mb-2">
-                      Invoice Details
-                    </h4>
+                    <h4 className="text-sm font-medium text-gray-500 mb-2">Invoice Details</h4>
                     <div className="bg-gray-50 p-3 rounded-md">
                       <div className="grid grid-cols-2 gap-2">
                         <div>
-                          <p className="text-xs text-gray-500">
-                            Invoice Number
-                          </p>
-                          <p className="text-sm font-medium">
-                            {selectedInvoice.id}
-                          </p>
+                          <p className="text-xs text-gray-500">Invoice Number</p>
+                          <p className="text-sm font-medium">{selectedInvoice.id}</p>
                         </div>
                         <div>
                           <p className="text-xs text-gray-500">Order ID</p>
-                          <p className="text-sm font-medium">
-                            {selectedInvoice.orderId}
-                          </p>
+                          <p className="text-sm font-medium">{selectedInvoice.orderId}</p>
                         </div>
                         <div>
                           <p className="text-xs text-gray-500">Invoice Date</p>
-                          <p className="text-sm font-medium">
-                            {selectedInvoice.date}
-                          </p>
+                          <p className="text-sm font-medium">{selectedInvoice.date}</p>
                         </div>
                         <div>
                           <p className="text-xs text-gray-500">Due Date</p>
-                          <p className="text-sm font-medium">
-                            {selectedInvoice.dueDate}
-                          </p>
+                          <p className="text-sm font-medium">{selectedInvoice.dueDate}</p>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div>
-                    <h4 className="text-sm font-medium text-gray-500 mb-2">
-                      Payment Status
-                    </h4>
+                    <h4 className="text-sm font-medium text-gray-500 mb-2">Payment Status</h4>
                     <div className="bg-gray-50 p-3 rounded-md">
                       <div className="flex items-center justify-between">
                         <div>
@@ -1506,28 +1241,23 @@ export default function FinancialReportsPage() {
                               selectedInvoice.status === "paid"
                                 ? "text-green-500"
                                 : selectedInvoice.status === "pending"
-                                ? "text-yellow-600"
-                                : "text-red-600"
+                                  ? "text-yellow-600"
+                                  : "text-red-600"
                             }`}
                           >
-                            {selectedInvoice.status.charAt(0).toUpperCase() +
-                              selectedInvoice.status.slice(1)}
+                            {selectedInvoice.status.charAt(0).toUpperCase() + selectedInvoice.status.slice(1)}
                           </p>
                         </div>
                         <div>
                           <p className="text-xs text-gray-500">Amount</p>
-                          <p className="text-sm font-bold">
-                            ₱{selectedInvoice.amount.toLocaleString()}
-                          </p>
+                          <p className="text-sm font-bold">₱{selectedInvoice.amount.toLocaleString()}</p>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <h4 className="text-sm font-medium text-gray-500 mb-2">
-                  Invoice Items
-                </h4>
+                <h4 className="text-sm font-medium text-gray-500 mb-2">Invoice Items</h4>
                 <div className="bg-gray-50 p-4 rounded-lg mb-6">
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead>
@@ -1561,15 +1291,9 @@ export default function FinancialReportsPage() {
                     <tbody className="divide-y divide-gray-200">
                       {selectedInvoice.items.map((item, index) => (
                         <tr key={index}>
-                          <td className="px-4 py-3 text-sm text-gray-900">
-                            {item.name}
-                          </td>
-                          <td className="px-4 py-3 text-sm text-gray-500 text-right">
-                            {item.quantity}
-                          </td>
-                          <td className="px-4 py-3 text-sm text-gray-500 text-right">
-                            ₱{item.price.toLocaleString()}
-                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-900">{item.name}</td>
+                          <td className="px-4 py-3 text-sm text-gray-500 text-right">{item.quantity}</td>
+                          <td className="px-4 py-3 text-sm text-gray-500 text-right">₱{item.price.toLocaleString()}</td>
                           <td className="px-4 py-3 text-sm font-medium text-gray-900 text-right">
                             ₱{item.total.toLocaleString()}
                           </td>
@@ -1578,10 +1302,7 @@ export default function FinancialReportsPage() {
                     </tbody>
                     <tfoot>
                       <tr>
-                        <td
-                          colSpan="3"
-                          className="px-4 py-3 text-sm font-medium text-gray-900 text-right"
-                        >
+                        <td colSpan="3" className="px-4 py-3 text-sm font-medium text-gray-900 text-right">
                           Subtotal
                         </td>
                         <td className="px-4 py-3 text-sm font-medium text-gray-900 text-right">
@@ -1589,10 +1310,7 @@ export default function FinancialReportsPage() {
                         </td>
                       </tr>
                       <tr>
-                        <td
-                          colSpan="3"
-                          className="px-4 py-3 text-sm font-medium text-gray-900 text-right"
-                        >
+                        <td colSpan="3" className="px-4 py-3 text-sm font-medium text-gray-900 text-right">
                           Tax
                         </td>
                         <td className="px-4 py-3 text-sm font-medium text-gray-900 text-right">
@@ -1600,10 +1318,7 @@ export default function FinancialReportsPage() {
                         </td>
                       </tr>
                       <tr>
-                        <td
-                          colSpan="3"
-                          className="px-4 py-3 text-sm font-bold text-gray-900 text-right"
-                        >
+                        <td colSpan="3" className="px-4 py-3 text-sm font-bold text-gray-900 text-right">
                           Total
                         </td>
                         <td className="px-4 py-3 text-sm font-bold text-gray-900 text-right">
@@ -1632,32 +1347,30 @@ export default function FinancialReportsPage() {
         )}
       </div>
     </div>
-  );
+  )
 }
 
 function StatCard({ title, value, change, icon, color }) {
   const getGradientClass = (color) => {
     switch (color) {
       case "green":
-        return "from-green-400 to-green-500";
+        return "from-green-400 to-green-500"
       case "blue":
-        return "from-blue-400 to-blue-600";
+        return "from-blue-400 to-blue-600"
       case "purple":
-        return "from-purple-400 to-purple-600";
+        return "from-purple-400 to-purple-600"
       case "amber":
-        return "from-amber-400 to-amber-600";
+        return "from-amber-400 to-amber-600"
       case "red":
-        return "from-red-400 to-red-600";
+        return "from-red-400 to-red-600"
       default:
-        return "from-gray-400 to-gray-600";
+        return "from-gray-400 to-gray-600"
     }
-  };
+  }
 
   return (
     <div
-      className={`bg-gradient-to-r ${getGradientClass(
-        color
-      )} rounded-xl shadow-sm p-4 transition-all hover:shadow-md`}
+      className={`bg-gradient-to-r ${getGradientClass(color)} rounded-xl shadow-sm p-4 transition-all hover:shadow-md`}
     >
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-base font-medium text-white">{title}</h3>
@@ -1671,5 +1384,5 @@ function StatCard({ title, value, change, icon, color }) {
         <span className="ml-2 text-sm text-white/80">from last month</span>
       </div>
     </div>
-  );
+  )
 }
