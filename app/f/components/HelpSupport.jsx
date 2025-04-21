@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import { useState } from "react"
+import { useState } from "react";
 import {
   Search,
   Phone,
@@ -15,13 +15,13 @@ import {
   Check,
   ArrowRight,
   Filter,
-} from "lucide-react"
+} from "lucide-react";
 
 export default function HelpSupport() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [activeTab, setActiveTab] = useState("faqs")
-  const [expandedFaq, setExpandedFaq] = useState(null)
-  const [expandedGuide, setExpandedGuide] = useState(null)
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeTab, setActiveTab] = useState("faqs");
+  const [expandedFaq, setExpandedFaq] = useState(null);
+  const [expandedGuide, setExpandedGuide] = useState(null);
 
   // FAQ data
   const faqs = [
@@ -69,7 +69,8 @@ export default function HelpSupport() {
     },
     {
       id: 7,
-      question: "How does the Sagip Saka Act affect transactions on this platform?",
+      question:
+        "How does the Sagip Saka Act affect transactions on this platform?",
       answer:
         "The Sagip Saka Act (Republic Act 11321) provides tax incentives for direct purchases from farmers. Transactions on our platform are compliant with this law, ensuring government buyers receive the applicable tax benefits. The platform automatically generates the necessary documentation for tax reporting purposes.",
       category: "policy",
@@ -81,14 +82,15 @@ export default function HelpSupport() {
         "For technical issues, we offer 24/7 support through chat, email, and phone during business hours (8AM-5PM, Monday-Friday). For urgent matters, use the emergency support line. Our technical team typically responds within 1 hour during business hours and within 4 hours outside business hours.",
       category: "support",
     },
-  ]
+  ];
 
   // Farmer guides
   const farmerGuides = [
     {
       id: 1,
       title: "Creating Your Product Listings",
-      description: "Learn how to create effective product listings that attract government buyers",
+      description:
+        "Learn how to create effective product listings that attract government buyers",
       steps: [
         "Log in to your farmer dashboard",
         "Navigate to 'My Products' and click 'Add New Product'",
@@ -109,7 +111,8 @@ export default function HelpSupport() {
     {
       id: 2,
       title: "Managing Orders and Deliveries",
-      description: "Step-by-step guide to handling orders from acceptance to delivery",
+      description:
+        "Step-by-step guide to handling orders from acceptance to delivery",
       steps: [
         "Review new orders in your 'Orders' dashboard",
         "Accept or request modifications within 24 hours",
@@ -130,7 +133,8 @@ export default function HelpSupport() {
     {
       id: 3,
       title: "Best Practices for Successful Sales",
-      description: "Tips and strategies to maximize your success on the platform",
+      description:
+        "Tips and strategies to maximize your success on the platform",
       steps: [
         "Maintain consistent product quality and accurate descriptions",
         "Price your products competitively based on market rates",
@@ -148,14 +152,15 @@ export default function HelpSupport() {
       ],
       icon: Check,
     },
-  ]
+  ];
 
   // Buyer guides
   const buyerGuides = [
     {
       id: 1,
       title: "Government Procurement Process",
-      description: "Understanding the streamlined procurement process through our platform",
+      description:
+        "Understanding the streamlined procurement process through our platform",
       steps: [
         "Log in to your government buyer account",
         "Browse available products or search for specific items",
@@ -198,7 +203,8 @@ export default function HelpSupport() {
     {
       id: 3,
       title: "Maximizing Value in Government Procurement",
-      description: "Strategies for effective and efficient agricultural procurement",
+      description:
+        "Strategies for effective and efficient agricultural procurement",
       steps: [
         "Utilize the seasonal forecast tool for procurement planning",
         "Engage with multiple farmers to compare quality and pricing",
@@ -216,43 +222,50 @@ export default function HelpSupport() {
       ],
       icon: Check,
     },
-  ]
+  ];
 
   // Filter FAQs based on search query
   const filteredFaqs = searchQuery
     ? faqs.filter(
         (faq) =>
           faq.question.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          faq.answer.toLowerCase().includes(searchQuery.toLowerCase()),
+          faq.answer.toLowerCase().includes(searchQuery.toLowerCase())
       )
-    : faqs
+    : faqs;
 
   // Toggle FAQ expansion
   const toggleFaq = (id) => {
-    setExpandedFaq(expandedFaq === id ? null : id)
-  }
+    setExpandedFaq(expandedFaq === id ? null : id);
+  };
 
   // Toggle guide expansion
   const toggleGuide = (id) => {
-    setExpandedGuide(expandedGuide === id ? null : id)
-  }
+    setExpandedGuide(expandedGuide === id ? null : id);
+  };
 
   return (
-    <div className="flex-1 bg-gray-50">
+    <div className="flex-1 bg-gray-50 pb-16">
+      <div className="xl:hidden h-16"></div>
+
       {/* Header */}
       <div className="">
         <div className="mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Help & Support Center</h1>
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+                Help & Support Center
+              </h1>
               <p className="mt-1 text-sm text-gray-500">
-                Find answers to common questions, learn how to use the platform, or contact our support team for
-                assistance.
+                Find answers to common questions, learn how to use the platform,
+                or contact our support team for assistance.
               </p>
             </div>
             <div className="flex items-center gap-3">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+              <div className="relative w-full">
+                <Search
+                  className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  size={16}
+                />
                 <input
                   type="text"
                   placeholder="Search help topics..."
@@ -274,20 +287,20 @@ export default function HelpSupport() {
       <div className="max-w-l mx-auto px-4 sm:px-6 lg:px-8 pb-6">
         {/* Navigation Tabs */}
         <div className="bg-white rounded-xl shadow-sm mb-6">
-          <div className="flex overflow-x-auto">
+          <div className="flex overflow-x-auto ">
             <button
               onClick={() => setActiveTab("faqs")}
-              className={`py-4 px-6 text-sm font-medium border-b-2 transition-colors ${
+              className={`py-4 px-6 text-sm font-medium border-b-2 transition-colors shrink-0 ${
                 activeTab === "faqs"
                   ? "border-green-500 text-green-600"
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
             >
-              Frequently Asked Questions
+              FAQ
             </button>
             <button
               onClick={() => setActiveTab("contact")}
-              className={`py-4 px-6 text-sm font-medium border-b-2 transition-colors ${
+              className={`py-4 px-6 text-sm font-medium border-b-2 transition-colors shrink-0 ${
                 activeTab === "contact"
                   ? "border-green-500 text-green-600"
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
@@ -297,7 +310,7 @@ export default function HelpSupport() {
             </button>
             <button
               onClick={() => setActiveTab("farmers")}
-              className={`py-4 px-6 text-sm font-medium border-b-2 transition-colors ${
+              className={`py-4 px-6 text-sm font-medium border-b-2 transition-colors shrink-0 ${
                 activeTab === "farmers"
                   ? "border-green-500 text-green-600"
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
@@ -307,7 +320,7 @@ export default function HelpSupport() {
             </button>
             <button
               onClick={() => setActiveTab("buyers")}
-              className={`py-4 px-6 text-sm font-medium border-b-2 transition-colors ${
+              className={`py-4 px-6 text-sm font-medium border-b-2 transition-colors shrink-0 ${
                 activeTab === "buyers"
                   ? "border-green-500 text-green-600"
                   : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
@@ -322,12 +335,19 @@ export default function HelpSupport() {
         {activeTab === "faqs" && (
           <div className="space-y-6">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <h2 className="text-xl font-bold mb-6">Frequently Asked Questions</h2>
+              <h2 className="text-xl font-bold mb-6">
+                Frequently Asked Questions
+              </h2>
 
               {filteredFaqs.length === 0 ? (
                 <div className="text-center py-10">
-                  <HelpCircle size={48} className="mx-auto text-gray-400 mb-4" />
-                  <p className="text-gray-500 mb-4">No FAQs found matching your search criteria.</p>
+                  <HelpCircle
+                    size={48}
+                    className="mx-auto text-gray-400 mb-4"
+                  />
+                  <p className="text-gray-500 mb-4">
+                    No FAQs found matching your search criteria.
+                  </p>
                   <button
                     className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors"
                     onClick={() => setSearchQuery("")}
@@ -346,11 +366,19 @@ export default function HelpSupport() {
                         className="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none"
                         onClick={() => toggleFaq(faq.id)}
                       >
-                        <span className="font-medium text-gray-900">{faq.question}</span>
+                        <span className="font-medium text-gray-900">
+                          {faq.question}
+                        </span>
                         {expandedFaq === faq.id ? (
-                          <ChevronDown className="text-gray-500 flex-shrink-0" size={20} />
+                          <ChevronDown
+                            className="text-gray-500 flex-shrink-0"
+                            size={20}
+                          />
                         ) : (
-                          <ChevronRight className="text-gray-500 flex-shrink-0" size={20} />
+                          <ChevronRight
+                            className="text-gray-500 flex-shrink-0"
+                            size={20}
+                          />
                         )}
                       </button>
                       {expandedFaq === faq.id && (
@@ -365,9 +393,12 @@ export default function HelpSupport() {
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Can't find what you're looking for?</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Can't find what you're looking for?
+              </h3>
               <p className="text-gray-600 mb-4">
-                Our support team is ready to assist you with any questions or issues you may have.
+                Our support team is ready to assist you with any questions or
+                issues you may have.
               </p>
               <button
                 className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center"
@@ -383,10 +414,12 @@ export default function HelpSupport() {
         {activeTab === "contact" && (
           <div className="space-y-6">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <h2 className="text-xl font-bold mb-4">Contact Our Support Team</h2>
+              <h2 className="text-xl font-bold mb-4">
+                Contact Our Support Team
+              </h2>
               <p className="text-gray-600 mb-6">
-                Our dedicated support team is available to assist you with any questions or issues you may encounter
-                while using our platform.
+                Our dedicated support team is available to assist you with any
+                questions or issues you may encounter while using our platform.
               </p>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
@@ -396,10 +429,13 @@ export default function HelpSupport() {
                   </div>
                   <h3 className="text-lg font-medium mb-2">Live Chat</h3>
                   <p className="text-gray-600 mb-4">
-                    Chat with our support team in real-time for immediate assistance with your questions.
+                    Chat with our support team in real-time for immediate
+                    assistance with your questions.
                   </p>
                   <p className="text-sm text-gray-500 mb-2">Available Hours:</p>
-                  <p className="text-sm text-gray-500 mb-4">Monday-Friday: 8AM - 8PM</p>
+                  <p className="text-sm text-gray-500 mb-4">
+                    Monday-Friday: 8AM - 8PM
+                  </p>
                   <button className="w-full px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
                     Start Chat
                   </button>
@@ -411,10 +447,13 @@ export default function HelpSupport() {
                   </div>
                   <h3 className="text-lg font-medium mb-2">Email Support</h3>
                   <p className="text-gray-600 mb-4">
-                    Send us an email with your questions or issues, and we'll respond within 24 hours.
+                    Send us an email with your questions or issues, and we'll
+                    respond within 24 hours.
                   </p>
                   <p className="text-sm text-gray-500 mb-2">Email Address:</p>
-                  <p className="text-sm text-gray-500 mb-4">support@sagipsaka.gov.ph</p>
+                  <p className="text-sm text-gray-500 mb-4">
+                    support@sagipsaka.gov.ph
+                  </p>
                   <button className="w-full px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
                     Send Email
                   </button>
@@ -426,7 +465,8 @@ export default function HelpSupport() {
                   </div>
                   <h3 className="text-lg font-medium mb-2">Phone Support</h3>
                   <p className="text-gray-600 mb-4">
-                    Call our support hotline for direct assistance with urgent matters or complex issues.
+                    Call our support hotline for direct assistance with urgent
+                    matters or complex issues.
                   </p>
                   <p className="text-sm text-gray-500 mb-2">Phone Number:</p>
                   <p className="text-sm text-gray-500 mb-4">(02) 8888-1234</p>
@@ -442,7 +482,10 @@ export default function HelpSupport() {
               <form className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="name"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       Your Name
                     </label>
                     <input
@@ -453,7 +496,10 @@ export default function HelpSupport() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium text-gray-700 mb-1"
+                    >
                       Email Address
                     </label>
                     <input
@@ -465,7 +511,10 @@ export default function HelpSupport() {
                   </div>
                 </div>
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="subject"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Subject
                   </label>
                   <input
@@ -476,7 +525,10 @@ export default function HelpSupport() {
                   />
                 </div>
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                  <label
+                    htmlFor="message"
+                    className="block text-sm font-medium text-gray-700 mb-1"
+                  >
                     Message
                   </label>
                   <textarea
@@ -505,8 +557,9 @@ export default function HelpSupport() {
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
               <h2 className="text-xl font-bold mb-4">Guide for Farmers</h2>
               <p className="text-gray-600 mb-6">
-                Learn how to effectively use our platform to list your products, manage orders, and maximize your sales
-                to government institutions.
+                Learn how to effectively use our platform to list your products,
+                manage orders, and maximize your sales to government
+                institutions.
               </p>
 
               <div className="space-y-4">
@@ -520,22 +573,35 @@ export default function HelpSupport() {
                       onClick={() => toggleGuide(guide.id)}
                     >
                       <div className="flex items-center">
-                        <guide.icon className="text-green-500 mr-3 flex-shrink-0" size={24} />
+                        <guide.icon
+                          className="text-green-500 mr-3 flex-shrink-0"
+                          size={24}
+                        />
                         <div>
                           <h3 className="font-medium text-lg">{guide.title}</h3>
-                          <p className="text-gray-600 text-sm">{guide.description}</p>
+                          <p className="text-gray-600 text-sm">
+                            {guide.description}
+                          </p>
                         </div>
                       </div>
                       {expandedGuide === guide.id ? (
-                        <ChevronDown className="text-gray-500 flex-shrink-0" size={20} />
+                        <ChevronDown
+                          className="text-gray-500 flex-shrink-0"
+                          size={20}
+                        />
                       ) : (
-                        <ChevronRight className="text-gray-500 flex-shrink-0" size={20} />
+                        <ChevronRight
+                          className="text-gray-500 flex-shrink-0"
+                          size={20}
+                        />
                       )}
                     </div>
                     {expandedGuide === guide.id && (
                       <div className="px-6 py-4 bg-white border-t border-gray-200">
                         <div className="mb-4">
-                          <h4 className="font-medium text-gray-900 mb-2">Step-by-Step Guide:</h4>
+                          <h4 className="font-medium text-gray-900 mb-2">
+                            Step-by-Step Guide:
+                          </h4>
                           <ol className="list-decimal pl-5 space-y-2">
                             {guide.steps.map((step, index) => (
                               <li key={index} className="text-gray-700">
@@ -545,7 +611,9 @@ export default function HelpSupport() {
                           </ol>
                         </div>
                         <div>
-                          <h4 className="font-medium text-gray-900 mb-2">Pro Tips:</h4>
+                          <h4 className="font-medium text-gray-900 mb-2">
+                            Pro Tips:
+                          </h4>
                           <ul className="list-disc pl-5 space-y-2">
                             {guide.tips.map((tip, index) => (
                               <li key={index} className="text-gray-700">
@@ -562,19 +630,24 @@ export default function HelpSupport() {
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Need additional assistance?</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Need additional assistance?
+              </h3>
               <p className="text-gray-600 mb-4">
-                Our farmer support specialists are available to provide personalized guidance for your specific needs.
+                Our farmer support specialists are available to provide
+                personalized guidance for your specific needs.
               </p>
               <div className="flex flex-wrap gap-4">
                 <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center">
-                  Schedule a Training Session <ExternalLink size={16} className="ml-2" />
+                  Schedule a Training Session{" "}
+                  <ExternalLink size={16} className="ml-2" />
                 </button>
                 <button
                   className="px-4 py-2 border border-green-500 text-green-500 rounded-lg hover:bg-green-50 transition-colors flex items-center"
                   onClick={() => setActiveTab("contact")}
                 >
-                  Contact Farmer Support <ArrowRight size={16} className="ml-2" />
+                  Contact Farmer Support{" "}
+                  <ArrowRight size={16} className="ml-2" />
                 </button>
               </div>
             </div>
@@ -585,10 +658,13 @@ export default function HelpSupport() {
         {activeTab === "buyers" && (
           <div className="space-y-6">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <h2 className="text-xl font-bold mb-4">Guide for Government Buyers</h2>
+              <h2 className="text-xl font-bold mb-4">
+                Guide for Government Buyers
+              </h2>
               <p className="text-gray-600 mb-6">
-                Learn how to navigate the procurement process, make payments, and maximize the value of your
-                agricultural purchases through our platform.
+                Learn how to navigate the procurement process, make payments,
+                and maximize the value of your agricultural purchases through
+                our platform.
               </p>
 
               <div className="space-y-4">
@@ -602,22 +678,35 @@ export default function HelpSupport() {
                       onClick={() => toggleGuide(guide.id)}
                     >
                       <div className="flex items-center">
-                        <guide.icon className="text-green-500 mr-3 flex-shrink-0" size={24} />
+                        <guide.icon
+                          className="text-green-500 mr-3 flex-shrink-0"
+                          size={24}
+                        />
                         <div>
                           <h3 className="font-medium text-lg">{guide.title}</h3>
-                          <p className="text-gray-600 text-sm">{guide.description}</p>
+                          <p className="text-gray-600 text-sm">
+                            {guide.description}
+                          </p>
                         </div>
                       </div>
                       {expandedGuide === guide.id ? (
-                        <ChevronDown className="text-gray-500 flex-shrink-0" size={20} />
+                        <ChevronDown
+                          className="text-gray-500 flex-shrink-0"
+                          size={20}
+                        />
                       ) : (
-                        <ChevronRight className="text-gray-500 flex-shrink-0" size={20} />
+                        <ChevronRight
+                          className="text-gray-500 flex-shrink-0"
+                          size={20}
+                        />
                       )}
                     </div>
                     {expandedGuide === guide.id && (
                       <div className="px-6 py-4 bg-white border-t border-gray-200">
                         <div className="mb-4">
-                          <h4 className="font-medium text-gray-900 mb-2">Step-by-Step Guide:</h4>
+                          <h4 className="font-medium text-gray-900 mb-2">
+                            Step-by-Step Guide:
+                          </h4>
                           <ol className="list-decimal pl-5 space-y-2">
                             {guide.steps.map((step, index) => (
                               <li key={index} className="text-gray-700">
@@ -627,7 +716,9 @@ export default function HelpSupport() {
                           </ol>
                         </div>
                         <div>
-                          <h4 className="font-medium text-gray-900 mb-2">Pro Tips:</h4>
+                          <h4 className="font-medium text-gray-900 mb-2">
+                            Pro Tips:
+                          </h4>
                           <ul className="list-disc pl-5 space-y-2">
                             {guide.tips.map((tip, index) => (
                               <li key={index} className="text-gray-700">
@@ -644,21 +735,26 @@ export default function HelpSupport() {
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-              <h3 className="text-lg font-medium text-gray-900 mb-2">Need specialized procurement assistance?</h3>
+              <h3 className="text-lg font-medium text-gray-900 mb-2">
+                Need specialized procurement assistance?
+              </h3>
               <p className="text-gray-600 mb-4">
-                Our government procurement specialists can help you optimize your agricultural purchasing strategy and
-                ensure specialists can help you optimize your agricultural purchasing strategy and ensure compliance
-                with all regulations.
+                Our government procurement specialists can help you optimize
+                your agricultural purchasing strategy and ensure specialists can
+                help you optimize your agricultural purchasing strategy and
+                ensure compliance with all regulations.
               </p>
               <div className="flex flex-wrap gap-4">
                 <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors flex items-center">
-                  Request Procurement Consultation <ExternalLink size={16} className="ml-2" />
+                  Request Procurement Consultation{" "}
+                  <ExternalLink size={16} className="ml-2" />
                 </button>
                 <button
                   className="px-4 py-2 border border-green-500 text-green-500 rounded-lg hover:bg-green-50 transition-colors flex items-center"
                   onClick={() => setActiveTab("contact")}
                 >
-                  Contact Buyer Support <ArrowRight size={16} className="ml-2" />
+                  Contact Buyer Support{" "}
+                  <ArrowRight size={16} className="ml-2" />
                 </button>
               </div>
             </div>
@@ -666,5 +762,5 @@ export default function HelpSupport() {
         )}
       </div>
     </div>
-  )
+  );
 }

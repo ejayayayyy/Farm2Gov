@@ -283,7 +283,7 @@ export default function FarmerFinancialReports() {
 
         {/* Tabs */}
         <div className="bg-white rounded-xl shadow-sm mb-6 overflow-x-auto">
-          <div className="flex flex-shrink-0 w-full">
+          <div className="flex shrink-0 w-full">
             <TabButton
               active={activeTab === "transactions"}
               onClick={() => setActiveTab("transactions")}
