@@ -34,7 +34,7 @@ const ProfileSettings = () => {
     // Check if we're in the browser environment
     if (typeof window !== "undefined") {
       try {
-        const storedRole = localStorage.getItem("userRole")
+        const storedRole = localStorage.getItem("role")
         console.log("Retrieved role from localStorage:", storedRole)
 
         if (storedRole) {

@@ -192,7 +192,7 @@ export default function LogisticsDeliveryPage() {
     {
       id: 3,
       name: "Island Movers",
-      logo: "/images/tropical-island-relocation.png",
+      logo: "/images/ship-logo.png",
       contactNumber: "09198765432",
       email: "contact@islandmovers.com",
       website: "https://www.islandmovers.com",

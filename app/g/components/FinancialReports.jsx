@@ -31,7 +31,7 @@ export default function FinancialReportsPage() {
   // Effect to get user role from localStorage
   useEffect(() => {
     // Get the user role from localStorage
-    const storedUserRole = localStorage.getItem("userRole")
+    const storedUserRole = localStorage.getItem("role")
     console.log("Detected user role from localStorage:", storedUserRole)
 
     // Set the user type based on the stored role

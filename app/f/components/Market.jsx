@@ -1,14 +1,26 @@
-"use client"
+"use client";
 
-import { useState, useRef } from "react"
-import { Camera, Filter, Package, Plus, Search, ShoppingBag, Tag, Trash2 } from "lucide-react"
+import { useState, useRef } from "react";
+import {
+  Camera,
+  Package,
+  Plus,
+  Search,
+  ShoppingBag,
+  Tag,
+  Trash2,
+  ChevronLeft,
+  ChevronRight,
+  HelpCircle,
+} from "lucide-react";
 
 export default function MarketPage() {
-  const [activeTab, setActiveTab] = useState("listings")
-  const [listingsTab, setListingsTab] = useState("active")
-  const fileInputRef = useRef(null)
+  const [activeTab, setActiveTab] = useState("listings");
+  const [listingsTab, setListingsTab] = useState("active");
+  const fileInputRef = useRef(null);
+  const [showHelp, setShowHelp] = useState(false);
 
-  const [productImages, setProductImages] = useState([])
+  const [productImages, setProductImages] = useState([]);
 
   const handleFileChange = (e) => {
     if (e.target.files.length > 0) {
@@ -16,125 +28,140 @@ export default function MarketPage() {
         id: Math.random().toString(36).substr(2, 9),
         url: URL.createObjectURL(file),
         file: file,
-      }))
-      setProductImages([...productImages, ...newImages])
+      }));
+      setProductImages([...productImages, ...newImages]);
     }
-  }
+  };
 
   const removeImage = (id) => {
-    setProductImages(productImages.filter((image) => image.id !== id))
-  }
+    setProductImages(productImages.filter((image) => image.id !== id));
+  };
 
   return (
-    <div className="flex-1 bg-gray-50">
-      {/* Header */}
-      <div className="">
-        <div className="mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Market</h1>
-              <p className="mt-1 text-sm text-gray-500">Manage your products and listings in the marketplace</p>
-            </div>
-            <div className="flex items-center gap-3">
-              {activeTab !== "add" && (
-                <button
-                  className="flex items-center gap-2 px-4 py-2 text-white bg-green-500 rounded-lg hover:bg-green-600 transition-colors shadow-sm"
-                  onClick={() => setActiveTab("add")}
-                >
-                  <Plus size={16} />
-                  Add Product
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+    <div className="flex-1 bg-gray-50 pb-16">
+      {/* Mobile Spacing for Fixed Header */}
+      <div className="xl:hidden h-16"></div>
 
       {/* Main Content */}
-      <div className="max-w-l mx-auto px-4 sm:px-6 lg:px-8 pb-6">
-        {/* Tabs */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 mb-6">
-          <nav className="flex px-6 space-x-8">
+      <div className="-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 pt-6">
+        {/* Welcome Banner */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-6 mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900">
+                Marketplace
+              </h1>
+              <p className="mt-2 text-base text-gray-600">
+                Manage your products and listings in the marketplace
+              </p>
+            </div>
+           
+          </div>
+        </div>
+
+        {/* Mobile-friendly Tabs */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 mb-6 overflow-x-auto">
+          <div className="flex min-w-full">
             <button
               onClick={() => setActiveTab("listings")}
-              className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+              className={`flex-1 py-4 px-4 text-center font-medium border-b-4 text-base transition-colors ${
                 activeTab === "listings"
-                  ? "border-green-500 text-green-600"
-                  : "border-transparent text-gray-500 hover:text-green-600 hover:border-green-300"
+                  ? "border-green-500 text-green-600 "
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
             >
-              Manage Listings
+              <div className="flex flex-col items-center sm:flex-row sm:justify-center gap-1">
+                <Package className="h-5 w-5" />
+                <span>My Products</span>
+              </div>
             </button>
             <button
               onClick={() => setActiveTab("add")}
-              className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+              className={`flex-1 py-4 px-4 text-center font-medium border-b-4 text-base transition-colors ${
                 activeTab === "add"
-                  ? "border-green-500 text-green-600"
-                  : "border-transparent text-gray-500 hover:text-green-600 hover:border-green-300"
+                  ? "border-green-500 text-green-600 "
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
             >
-              Add/Edit Product
+              <div className="flex flex-col items-center sm:flex-row sm:justify-center gap-1">
+                <Plus className="h-5 w-5" />
+                <span>Add Product</span>
+              </div>
             </button>
             <button
               onClick={() => setActiveTab("discounts")}
-              className={`py-4 px-1 border-b-2 font-medium text-sm transition-colors ${
+              className={`flex-1 py-4 px-4 text-center font-medium border-b-4 text-base transition-colors ${
                 activeTab === "discounts"
-                  ? "border-green-500 text-green-600"
-                  : "border-transparent text-gray-500 hover:text-green-600 hover:border-green-300"
+                  ? "border-green-500 text-green-600 "
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
               }`}
             >
-              Bulk Discounts & Offers
+              <div className="flex flex-col items-center sm:flex-row sm:justify-center gap-1">
+                <Tag className="h-5 w-5" />
+                <span>Discounts</span>
+              </div>
             </button>
-          </nav>
+          </div>
         </div>
 
-        {/* Two Column Layout */}
+        {/* Responsive Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column - Main Content */}
+          {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Add/Edit Product Form */}
             {activeTab === "add" && (
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-6 border-b border-gray-100">
-                  <h2 className="text-xl font-semibold text-gray-900">Add New Product</h2>
+                <div className="p-6 border-b border-gray-100 bg-green-5">
+                  <h2 className="text-xl font-semibold text-gray-900">
+                    Add New Product
+                  </h2>
                   <p className="text-sm text-gray-500 mt-1">
                     Fill in the details to list your product in the marketplace
                   </p>
                 </div>
                 <div className="p-6">
                   <form className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <label htmlFor="productName" className="block text-sm font-medium text-gray-700 mb-1">
-                          Product Name
-                        </label>
-                        <input
-                          type="text"
-                          id="productName"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm transition-colors"
-                          placeholder="Enter product name"
-                        />
-                      </div>
+                    <div>
+                      <label
+                        htmlFor="productName"
+                        className="block text-base font-medium text-gray-700 mb-2"
+                      >
+                        Product Name
+                      </label>
+                      <input
+                        type="text"
+                        id="productName"
+                        className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                        placeholder="Enter product name"
+                      />
+                    </div>
 
+                    <div>
+                      <label
+                        htmlFor="category"
+                        className="block text-base font-medium text-gray-700 mb-2"
+                      >
+                        Category
+                      </label>
+                      <select
+                        id="category"
+                        className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                      >
+                        <option value="">Select a category</option>
+                        <option value="vegetables">Vegetables</option>
+                        <option value="fruits">Fruits</option>
+                        <option value="grains">Grains</option>
+                        <option value="dairy">Dairy</option>
+                        <option value="meat">Meat</option>
+                      </select>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                       <div>
-                        <label htmlFor="category" className="block text-sm font-medium text-gray-700 mb-1">
-                          Category
-                        </label>
-                        <select
-                          id="category"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm transition-colors"
+                        <label
+                          htmlFor="price"
+                          className="block text-base font-medium text-gray-700 mb-2"
                         >
-                          <option value="">Select a category</option>
-                          <option value="vegetables">Vegetables</option>
-                          <option value="fruits">Fruits</option>
-                          <option value="grains">Grains</option>
-                          <option value="dairy">Dairy</option>
-                          <option value="meat">Meat</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label htmlFor="price" className="block text-sm font-medium text-gray-700 mb-1">
                           Price (₱)
                         </label>
                         <input
@@ -142,90 +169,100 @@ export default function MarketPage() {
                           id="price"
                           min="0"
                           step="0.01"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm transition-colors"
+                          className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
                           placeholder="0.00"
                         />
                       </div>
 
                       <div>
-                        <label htmlFor="quantity" className="block text-sm font-medium text-gray-700 mb-1">
+                        <label
+                          htmlFor="quantity"
+                          className="block text-base font-medium text-gray-700 mb-2"
+                        >
                           Quantity Available
                         </label>
                         <input
                           type="number"
                           id="quantity"
                           min="1"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm transition-colors"
+                          className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
                           placeholder="Enter quantity"
                         />
                       </div>
-
-                      <div className="md:col-span-2">
-                        <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-1">
-                          Description
-                        </label>
-                        <textarea
-                          id="description"
-                          rows="3"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm transition-colors"
-                          placeholder="Describe your product"
-                        ></textarea>
-                      </div>
-
-                      <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Product Photos</label>
-                        <div className="mt-1 flex items-center flex-wrap gap-4">
-                          {productImages.map((image) => (
-                            <div key={image.id} className="relative group">
-                              <img
-                                src={image.url || "/placeholder.svg"}
-                                alt="Product preview"
-                                className="h-24 w-24 object-cover rounded-lg border border-gray-200 shadow-sm"
-                              />
-                              <button
-                                type="button"
-                                onClick={() => removeImage(image.id)}
-                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1.5 opacity-0 group-hover:opacity-100 transition-opacity shadow-sm"
-                              >
-                                <Trash2 size={14} />
-                              </button>
-                            </div>
-                          ))}
-
-                          <button
-                            type="button"
-                            onClick={() => fileInputRef.current.click()}
-                            className="h-24 w-24 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center text-gray-500 hover:border-green-500 hover:text-green-500 transition-colors"
-                          >
-                            <Camera className="h-6 w-6 mb-1" />
-                            <span className="text-xs">Add Photo</span>
-                          </button>
-                          <input
-                            type="file"
-                            ref={fileInputRef}
-                            onChange={handleFileChange}
-                            accept="image/*"
-                            multiple
-                            className="hidden"
-                          />
-                        </div>
-                        <p className="mt-2 text-sm text-gray-500">
-                          Upload up to 5 images of your product. First image will be the cover.
-                        </p>
-                      </div>
                     </div>
 
-                    <div className="flex justify-end space-x-3 pt-4">
+                    <div>
+                      <label
+                        htmlFor="description"
+                        className="block text-base font-medium text-gray-700 mb-2"
+                      >
+                        Description
+                      </label>
+                      <textarea
+                        id="description"
+                        rows="3"
+                        className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                        placeholder="Describe your product"
+                      ></textarea>
+                    </div>
+
+                    <div>
+                      <label className="block text-base font-medium text-gray-700 mb-2">
+                        Product Photos
+                      </label>
+                      <div className="mt-2 flex flex-wrap gap-4">
+                        {productImages.map((image) => (
+                          <div key={image.id} className="relative">
+                            <img
+                              src={image.url || "/placeholder.svg"}
+                              alt="Product preview"
+                              className="h-28 w-28 object-cover rounded-lg border border-gray-200 shadow-sm"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => removeImage(image.id)}
+                              className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-2 shadow-sm"
+                              aria-label="Remove image"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                        ))}
+
+                        <button
+                          type="button"
+                          onClick={() => fileInputRef.current.click()}
+                          className="h-28 w-28 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center text-gray-500 hover:border-green-500 hover:text-green-500 transition-colors"
+                        >
+                          <Camera className="h-8 w-8 mb-1" />
+                          <span className="text-sm">Add Photo</span>
+                        </button>
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          onChange={handleFileChange}
+                          accept="image/*"
+                          multiple
+                          className="hidden"
+                        />
+                      </div>
+                      <p className="mt-2 text-sm text-gray-500">
+                        Upload up to 5 images of your product. First image will
+                        be the cover.
+                      </p>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4">
                       <button
                         type="button"
                         onClick={() => setActiveTab("listings")}
-                        className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                        className="px-6 py-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                       >
                         Cancel
                       </button>
                       <button
                         type="submit"
-                        className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-lg hover:bg-green-600 transition-colors shadow-sm"
+                        className="px-6 py-3 text-base font-medium text-white bg-green-500 rounded-lg hover:bg-green-600 transition-colors shadow-sm"
                       >
                         Save Product
                       </button>
@@ -238,44 +275,44 @@ export default function MarketPage() {
             {/* Manage Listings */}
             {activeTab === "listings" && (
               <>
-                {/* Market Stats */}
+                {/* Market Stats - Simplified for mobile */}
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <MarketStatCard
                     title="Active Products"
                     value="12"
-                    icon={<Package className="w-6 h-6 text-white" />}
+                    icon={<Package className="w-7 h-7 text-white" />}
                     color="green"
                   />
                   <MarketStatCard
                     title="Total Sales"
-                    value="₱45,231.89"
-                    icon={<ShoppingBag className="w-6 h-6 text-white" />}
+                    value="₱45,231"
+                    icon={<ShoppingBag className="w-7 h-7 text-white" />}
                     color="blue"
                   />
                   <MarketStatCard
-                    title="Avg. Product Price"
+                    title="Avg. Price"
                     value="₱125.50"
-                    icon={<Tag className="w-6 h-6 text-white" />}
+                    icon={<Tag className="w-7 h-7 text-white" />}
                     color="purple"
                   />
                 </div>
 
-                {/* Search and Filter */}
-                <div className="">
-                  <div className="flex flex-col sm:flex-row gap-4 justify-between bg-white p-4 shadow-sm rounded-xl">
-                    <div className="relative flex-1 max-w-md">
+                {/* Search and Filter - Simplified */}
+                <div className="bg-white rounded-xl shadow-sm p-4">
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <div className="relative flex-1">
                       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         <Search className="h-5 w-5 text-gray-400" />
                       </div>
                       <input
                         type="text"
-                        className="block w-full pl-10 pr-3 py-2 border bg-white border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500 transition-colors"
+                        className="block w-full pl-10 pr-3 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
                         placeholder="Search products..."
                       />
                     </div>
 
-                    <div className="flex space-x-2">
-                      <select className="px-3 py-2 bg-white border border-gray-300 rounded-lg shadow-sm focus:ring-green-500 focus:border-green-500 transition-colors">
+                    <div className="flex gap-2">
+                      <select className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500">
                         <option value="">All Categories</option>
                         <option value="vegetables">Vegetables</option>
                         <option value="fruits">Fruits</option>
@@ -283,56 +320,58 @@ export default function MarketPage() {
                         <option value="dairy">Dairy</option>
                         <option value="meat">Meat</option>
                       </select>
-
-                      <button className="flex items-center gap-1 px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                        <Filter size={16} />
-                        Sort
-                      </button>
                     </div>
                   </div>
                 </div>
 
-                {/* Listings Tabs */}
+                {/* Listings Tabs - Larger touch targets */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                   <div className="border-b border-gray-100">
-                    <nav className="flex -mb-px px-6 pt-4 space-x-8">
+                    <div className="flex">
                       <button
                         onClick={() => setListingsTab("active")}
-                        className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                        className={`flex-1 py-4 px-4 text-center font-medium text-base transition-colors ${
                           listingsTab === "active"
-                            ? "border-green-500 text-green-600"
-                            : "border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-300"
+                            ? "border-b-4 border-green-500 text-green-600 "
+                            : "border-b-4 border-transparent text-gray-500"
                         }`}
                       >
                         Active{" "}
-                        <span className="ml-1 px-2 py-0.5 text-xs bg-green-100 text-green-800 rounded-full">12</span>
+                        <span className="ml-1 px-2 py-0.5 text-xs bg-green-100 text-green-800 rounded-full">
+                          12
+                        </span>
                       </button>
                       <button
                         onClick={() => setListingsTab("sold")}
-                        className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                        className={`flex-1 py-4 px-4 text-center font-medium text-base transition-colors ${
                           listingsTab === "sold"
-                            ? "border-green-500 text-green-600"
-                            : "border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-300"
+                            ? "border-b-4 border-green-500 text-green-600 "
+                            : "border-b-4 border-transparent text-gray-500"
                         }`}
                       >
-                        Sold <span className="ml-1 px-2 py-0.5 text-xs bg-gray-100 text-gray-800 rounded-full">8</span>
+                        Sold{" "}
+                        <span className="ml-1 px-2 py-0.5 text-xs bg-gray-100 text-gray-800 rounded-full">
+                          8
+                        </span>
                       </button>
                       <button
                         onClick={() => setListingsTab("expired")}
-                        className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors ${
+                        className={`flex-1 py-4 px-4 text-center font-medium text-base transition-colors ${
                           listingsTab === "expired"
-                            ? "border-green-500 text-green-600"
-                            : "border-transparent text-gray-500 hover:text-gray-900 hover:border-gray-300"
+                            ? "border-b-4 border-green-500 text-green-600 "
+                            : "border-b-4 border-transparent text-gray-500"
                         }`}
                       >
                         Expired{" "}
-                        <span className="ml-1 px-2 py-0.5 text-xs bg-gray-100 text-gray-800 rounded-full">3</span>
+                        <span className="ml-1 px-2 py-0.5 text-xs bg-gray-100 text-gray-800 rounded-full">
+                          3
+                        </span>
                       </button>
-                    </nav>
+                    </div>
                   </div>
 
-                  {/* Product Listings */}
-                  <div className="p-6">
+                  {/* Product Listings - Larger cards for touch */}
+                  <div className="p-4 sm:p-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {/* Sample Products - These would be dynamically generated */}
                       {listingsTab === "active" && (
@@ -407,18 +446,21 @@ export default function MarketPage() {
                       )}
                     </div>
 
-                    {/* Pagination */}
-                    <div className="flex items-center justify-between mt-8">
-                      <div className="text-sm text-gray-500">
-                        Showing <span className="font-medium">1</span> to <span className="font-medium">10</span> of{" "}
-                        <span className="font-medium">23</span> results
+                    {/* Pagination - Simplified with larger buttons */}
+                    <div className="flex flex-col sm:flex-row items-center justify-between mt-8 gap-4">
+                      <div className="text-base text-gray-500 order-2 sm:order-1">
+                        Showing <span className="font-medium">1</span> to{" "}
+                        <span className="font-medium">10</span> of{" "}
+                        <span className="font-medium">23</span> products
                       </div>
-                      <div className="flex space-x-2">
-                        <button className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                          Previous
+                      <div className="flex gap-3 order-1 sm:order-2">
+                        <button className="flex items-center gap-1 px-5 py-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                          <ChevronLeft size={18} />
+                          <span>Previous</span>
                         </button>
-                        <button className="px-3 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                          Next
+                        <button className="flex items-center gap-1 px-5 py-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
+                          <span>Next</span>
+                          <ChevronRight size={18} />
                         </button>
                       </div>
                     </div>
@@ -427,98 +469,115 @@ export default function MarketPage() {
               </>
             )}
 
-            {/* Bulk Discounts & Offers */}
+            {/* Bulk Discounts & Offers - Simplified form */}
             {activeTab === "discounts" && (
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-6 border-b border-gray-100">
-                  <h2 className="text-xl font-semibold text-gray-900">Set Bulk Discounts</h2>
-                  <p className="text-sm text-gray-500 mt-1">Create special offers for customers who buy in bulk</p>
+                <div className="p-6 border-b border-gray-100 bg-green-0">
+                  <h2 className="text-xl font-semibold text-gray-900">
+                    Set Bulk Discounts
+                  </h2>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Create special offers for customers who buy in bulk
+                  </p>
                 </div>
                 <div className="p-6">
                   <form className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                        <label htmlFor="discountType" className="block text-sm font-medium text-gray-700 mb-1">
-                          Discount Type
-                        </label>
-                        <select
-                          id="discountType"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm transition-colors"
-                        >
-                          <option value="percentage">Percentage Discount</option>
-                          <option value="fixed">Fixed Amount Discount</option>
-                          <option value="buy-x-get-y">Buy X Get Y Free</option>
-                        </select>
-                      </div>
+                    <div>
+                      <label
+                        htmlFor="discountType"
+                        className="block text-base font-medium text-gray-700 mb-2"
+                      >
+                        Discount Type
+                      </label>
+                      <select
+                        id="discountType"
+                        className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                      >
+                        <option value="percentage">Percentage Discount</option>
+                        <option value="fixed">Fixed Amount Discount</option>
+                        <option value="buy-x-get-y">Buy X Get Y Free</option>
+                      </select>
+                    </div>
 
-                      <div>
-                        <label htmlFor="discountValue" className="block text-sm font-medium text-gray-700 mb-1">
-                          Discount Value
-                        </label>
-                        <div className="flex">
-                          <span className="inline-flex items-center px-3 border border-r-0 border-gray-300 bg-gray-50 text-gray-500 rounded-l-lg">
-                            %
-                          </span>
-                          <input
-                            type="number"
-                            id="discountValue"
-                            min="0"
-                            max="100"
-                            className="flex-1 px-3 py-2 border border-gray-300 rounded-r-lg shadow-sm transition-colors"
-                            placeholder="Enter discount percentage"
-                          />
-                        </div>
-                      </div>
-
-                      <div>
-                        <label htmlFor="minQuantity" className="block text-sm font-medium text-gray-700 mb-1">
-                          Minimum Quantity
-                        </label>
+                    <div>
+                      <label
+                        htmlFor="discountValue"
+                        className="block text-base font-medium text-gray-700 mb-2"
+                      >
+                        Discount Value
+                      </label>
+                      <div className="flex">
+                        <span className="inline-flex items-center px-4 py-3 border border-r-0 border-gray-300 bg-gray-50 text-gray-500 rounded-l-lg text-base">
+                          %
+                        </span>
                         <input
                           type="number"
-                          id="minQuantity"
-                          min="2"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm transition-colors"
-                          placeholder="Minimum quantity for discount"
-                        />
-                      </div>
-
-                      <div>
-                        <label htmlFor="applyTo" className="block text-sm font-medium text-gray-700 mb-1">
-                          Apply To
-                        </label>
-                        <select
-                          id="applyTo"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm transition-colors"
-                        >
-                          <option value="all">All Products</option>
-                          <option value="category">Specific Category</option>
-                          <option value="products">Selected Products</option>
-                        </select>
-                      </div>
-
-                      <div className="md:col-span-2">
-                        <label htmlFor="validUntil" className="block text-sm font-medium text-gray-700 mb-1">
-                          Valid Until
-                        </label>
-                        <input
-                          type="date"
-                          id="validUntil"
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm transition-colors"
+                          id="discountValue"
+                          min="0"
+                          max="100"
+                          className="flex-1 px-4 py-3 text-base border border-gray-300 rounded-r-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                          placeholder="Enter discount percentage"
                         />
                       </div>
                     </div>
 
-                    <div className="flex justify-end space-x-3 pt-4">
+                    <div>
+                      <label
+                        htmlFor="minQuantity"
+                        className="block text-base font-medium text-gray-700 mb-2"
+                      >
+                        Minimum Quantity
+                      </label>
+                      <input
+                        type="number"
+                        id="minQuantity"
+                        min="2"
+                        className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                        placeholder="Minimum quantity for discount"
+                      />
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="applyTo"
+                        className="block text-base font-medium text-gray-700 mb-2"
+                      >
+                        Apply To
+                      </label>
+                      <select
+                        id="applyTo"
+                        className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                      >
+                        <option value="all">All Products</option>
+                        <option value="category">Specific Category</option>
+                        <option value="products">Selected Products</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label
+                        htmlFor="validUntil"
+                        className="block text-base font-medium text-gray-700 mb-2"
+                      >
+                        Valid Until
+                      </label>
+                      <input
+                        type="date"
+                        id="validUntil"
+                        className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg shadow-sm focus:ring-2 focus:ring-green-500 focus:border-green-500"
+                      />
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row justify-end gap-3 pt-4">
                       <button
                         type="button"
-                        className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                        className="px-6 py-3 text-base font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
                       >
                         Cancel
                       </button>
                       <button
                         type="submit"
-                        className="px-4 py-2 text-sm font-medium text-white bg-green-500 rounded-lg hover:bg-green-600 transition-colors shadow-sm"
+                        className="px-6 py-3 text-base font-medium text-white bg-green-500 rounded-lg hover:bg-green-600 transition-colors shadow-sm"
                       >
                         Create Discount
                       </button>
@@ -531,44 +590,55 @@ export default function MarketPage() {
 
           {/* Right Column - Sidebar */}
           <div className="space-y-6">
-            {/* Market Tips */}
+            {/* Market Tips - More visual with icons */}
             {activeTab === "listings" && (
               <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-5 border-b border-gray-100 bg-green-500">
-                  <h3 className="text-lg font-semibold text-white">Market Tips</h3>
+                  <h3 className="text-lg font-semibold text-white">
+                    Market Tips
+                  </h3>
                 </div>
                 <div className="p-5">
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-3">
-                      <div className="p-2 bg-green-100 rounded-full">
-                        <Tag className="h-5 w-5 text-green-600" />
+                  <div className="space-y-5">
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 bg-green-100 rounded-full">
+                        <Tag className="h-6 w-6 text-green-600" />
                       </div>
                       <div>
-                        <h4 className="text-sm font-medium text-gray-900">Optimize Your Pricing</h4>
-                        <p className="text-xs text-gray-500 mt-0.5">
-                          Research market rates and set competitive prices for your products.
+                        <h4 className="text-base font-medium text-gray-900">
+                          Set Good Prices
+                        </h4>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Check what others are charging and set fair prices for
+                          your products.
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-start gap-3">
-                      <div className="p-2 bg-blue-100 rounded-full">
-                        <Camera className="h-5 w-5 text-blue-600" />
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 bg-blue-100 rounded-full">
+                        <Camera className="h-6 w-6 text-blue-600" />
                       </div>
                       <div>
-                        <h4 className="text-sm font-medium text-gray-900">Use Quality Photos</h4>
-                        <p className="text-xs text-gray-500 mt-0.5">
-                          Clear, well-lit photos help your products stand out and sell faster.
+                        <h4 className="text-base font-medium text-gray-900">
+                          Take Clear Photos
+                        </h4>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Good photos in bright light help sell your products
+                          faster.
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-start gap-3">
-                      <div className="p-2 bg-purple-100 rounded-full">
-                        <Package className="h-5 w-5 text-purple-600" />
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 bg-purple-100 rounded-full">
+                        <Package className="h-6 w-6 text-purple-600" />
                       </div>
                       <div>
-                        <h4 className="text-sm font-medium text-gray-900">Update Inventory Regularly</h4>
-                        <p className="text-xs text-gray-500 mt-0.5">
-                          Keep your product quantities accurate to avoid overselling.
+                        <h4 className="text-base font-medium text-gray-900">
+                          Update Your Stock
+                        </h4>
+                        <p className="text-sm text-gray-500 mt-1">
+                          Keep your quantities up to date to avoid problems with
+                          buyers.
                         </p>
                       </div>
                     </div>
@@ -577,48 +647,70 @@ export default function MarketPage() {
               </div>
             )}
 
-            {/* Quick Actions */}
+            {/* Quick Actions - Larger buttons */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-              <div className="p-5 border-b border-gray-100">
-                <h3 className="text-lg font-semibold text-gray-900">Quick Actions</h3>
+              <div className="p-5 border-b border-gray-100 bg-green-0">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Quick Actions
+                </h3>
               </div>
               <div className="p-5 space-y-3">
                 <QuickActionButton
                   label="Add New Product"
-                  icon={<Plus className="w-4 h-4" />}
+                  icon={<Plus className="w-5 h-5" />}
                   color="green"
                   onClick={() => setActiveTab("add")}
                 />
-                <QuickActionButton label="Manage Inventory" icon={<Package className="w-4 h-4" />} color="blue" />
+                <QuickActionButton
+                  label="Manage Inventory"
+                  icon={<Package className="w-5 h-5" />}
+                  color="blue"
+                />
                 <QuickActionButton
                   label="Create Discount"
-                  icon={<Tag className="w-4 h-4" />}
+                  icon={<Tag className="w-5 h-5" />}
                   color="purple"
                   onClick={() => setActiveTab("discounts")}
                 />
-                <QuickActionButton label="View Sales Report" icon={<ShoppingBag className="w-4 h-4" />} color="amber" />
+                <QuickActionButton
+                  label="View Sales Report"
+                  icon={<ShoppingBag className="w-5 h-5" />}
+                  color="amber"
+                />
               </div>
             </div>
 
-            {/* Top Selling Products */}
+            {/* Top Selling Products - Enhanced for readability */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-              <div className="p-5 border-b border-gray-100">
-                <h3 className="text-lg font-semibold text-gray-900">Top Selling Products</h3>
+              <div className="p-5 border-b border-gray-100 bg-green-0">
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Top Selling Products
+                </h3>
               </div>
               <div className="p-5">
-                <div className="space-y-4">
+                <div className="space-y-5">
                   <TopSellingItem
                     name="Organic Rice (50kg)"
                     sales="₱45,000"
                     units="30 units"
                     image="/images/bowl-of-steamed-rice.png"
                   />
-                  <TopSellingItem name="Fresh Tomatoes" sales="₱22,500" units="300 kg" image="/images/ripe-red-tomatoes.png" />
-                  <TopSellingItem name="Red Apples" sales="₱18,000" units="150 kg" image="/images/red-apples-basket.png" />
+                  <TopSellingItem
+                    name="Fresh Tomatoes"
+                    sales="₱22,500"
+                    units="300 kg"
+                    image="/images/ripe-red-tomatoes.png"
+                  />
+                  <TopSellingItem
+                    name="Red Apples"
+                    sales="₱18,000"
+                    units="150 kg"
+                    image="/images/red-apples-basket.png"
+                  />
                 </div>
               </div>
-              <div className="px-5 py-3 border-t border-gray-100">
-                <button className="w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
+              <div className="px-5 py-4 border-t border-gray-100 bg-gray-50">
+                <button className="w-full px-4 py-3 text-base font-medium text-gray-700 bg-white rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
                   View All Products
                 </button>
               </div>
@@ -626,132 +718,149 @@ export default function MarketPage() {
           </div>
         </div>
       </div>
+
+     
     </div>
-  )
+  );
 }
 
 function MarketStatCard({ title, value, icon, color }) {
   const getGradientClass = (color) => {
     switch (color) {
       case "green":
-        return "from-green-400 to-green-600"
+        return "from-green-400 to-green-600";
       case "blue":
-        return "from-blue-400 to-blue-600"
+        return "from-blue-400 to-blue-600";
       case "purple":
-        return "from-purple-400 to-purple-600"
+        return "from-purple-400 to-purple-600";
       case "amber":
-        return "from-amber-400 to-amber-600"
+        return "from-amber-400 to-amber-600";
       default:
-        return "from-gray-400 to-gray-600"
+        return "from-gray-400 to-gray-600";
     }
-  }
+  };
 
   return (
     <div
-      className={`bg-gradient-to-r ${getGradientClass(color)} rounded-xl shadow-sm p-4 transition-all hover:shadow-md`}
+      className={`bg-gradient-to-r ${getGradientClass(
+        color
+      )} rounded-xl shadow-sm p-5 transition-all hover:shadow-md`}
     >
-      <div className="flex items-center justify-between mb-2">
-        <h3 className="text-base font-medium text-white">{title}</h3>
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-lg font-medium text-white">{title}</h3>
         <div className="p-2 rounded-full bg-white/20">{icon}</div>
       </div>
       <div className="text-2xl font-bold text-white">{value}</div>
     </div>
-  )
+  );
 }
 
 function ProductCard({ name, category, price, quantity, image, status }) {
   return (
-    <div className="bg-white border border-gray-100 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all">
+    <div className="flex flex-col h-full border border-gray-100 rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all">
       <div className="relative">
-        <img src={image || "/placeholder.svg?height=200&width=200"} alt={name} className="w-full h-48 object-cover" />
+        <img
+          src={image || "/placeholder.svg?height=200&width=200"}
+          alt={name}
+          className="w-full h-52 object-cover"
+        />
         {status === "sold" && (
           <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <span className="px-3 py-1 bg-red-500 text-white font-semibold rounded-full text-sm">SOLD OUT</span>
+            <span className="px-4 py-2 bg-red-500 text-white font-semibold rounded-full text-base">
+              SOLD OUT
+            </span>
           </div>
         )}
         {status === "expired" && (
           <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <span className="px-3 py-1 bg-gray-500 text-white font-semibold rounded-full text-sm">EXPIRED</span>
+            <span className="px-4 py-2 bg-gray-500 text-white font-semibold rounded-full text-base">
+              EXPIRED
+            </span>
           </div>
         )}
       </div>
-      <div className="p-4">
-        <div className="flex justify-between items-start">
+      
+      <div className="p-5 flex flex-col justify-between ">
+        <div className="flex justify-between items-start ">
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">{name}</h3>
-            <p className="text-sm text-gray-500">{category}</p>
+            <h3 className="text-xl font-semibold text-gray-900">{name}</h3>
+            <p className="text-base text-gray-500">{category}</p>
           </div>
           <div className="text-right">
-            <p className="text-lg font-bold text-gray-900">₱{price.toFixed(2)}</p>
-            <p className="text-sm text-gray-500">{quantity} available</p>
+            <p className="text-xl font-bold text-gray-900">
+              ₱{price.toFixed(2)}
+            </p>
+            <p className="text-base text-gray-500">{quantity} available</p>
           </div>
         </div>
 
         {status === "active" && (
-          <div className="mt-4 flex justify-between">
-            <button className="px-3 py-1.5 text-sm font-medium text-green-600 border border-green-600 rounded-lg hover:bg-green-50 transition-colors">
+          <div className="mt-5 flex justify-between gap-3 ">
+            <button className="flex-1 px-4 py-3 text-base font-medium text-green-600 border border-green-600 rounded-lg hover:bg-green-50 transition-colors">
               Edit
             </button>
-            <button className="px-3 py-1.5 text-sm font-medium text-red-600 border border-red-600 rounded-lg hover:bg-red-50 transition-colors">
+            <button className="flex-1 px-4 py-3 text-base font-medium text-red-600 border border-red-600 rounded-lg hover:bg-red-50 transition-colors">
               Remove
             </button>
           </div>
         )}
 
         {(status === "sold" || status === "expired") && (
-          <div className="mt-4 flex justify-center">
-            <button className="px-3 py-1.5 text-sm font-medium text-green-600 border border-green-600 rounded-lg hover:bg-green-50 transition-colors">
-              Relist
+          <div className="mt-5 flex justify-center">
+            <button className="w-full px-4 py-3 text-base font-medium text-green-600 border border-green-600 rounded-lg hover:bg-green-50 transition-colors">
+              Relist Product
             </button>
           </div>
         )}
       </div>
     </div>
-  )
+  );
 }
 
 function QuickActionButton({ label, icon, color, onClick }) {
   const getColorClass = (color) => {
     switch (color) {
       case "green":
-        return "text-green-500 border-green-200 hover:bg-green-50"
+        return "text-green-500 border-green-200 hover:bg-green-50";
       case "blue":
-        return "text-blue-600 border-blue-200 hover:bg-blue-50"
+        return "text-blue-600 border-blue-200 hover:bg-blue-50";
       case "purple":
-        return "text-purple-600 border-purple-200 hover:bg-purple-50"
+        return "text-purple-600 border-purple-200 hover:bg-purple-50";
       case "amber":
-        return "text-amber-600 border-amber-200 hover:bg-amber-50"
+        return "text-amber-600 border-amber-200 hover:bg-amber-50";
       default:
-        return "text-gray-600 border-gray-200 hover:bg-gray-50"
+        return "text-gray-600 border-gray-200 hover:bg-gray-50";
     }
-  }
+  };
 
   return (
     <button
-      className={`flex items-center w-full p-3 rounded-lg border ${getColorClass(color)} transition-colors`}
+      className={`flex items-center w-full p-4 rounded-lg border-2 ${getColorClass(
+        color
+      )} transition-colors`}
       onClick={onClick}
     >
-      <div className="mr-3">{icon}</div>
-      <span className="font-medium">{label}</span>
+      <div className="mr-3 p-2 rounded-full bg-gray-50">{icon}</div>
+      <span className="font-medium text-base">{label}</span>
     </button>
-  )
+  );
 }
 
 function TopSellingItem({ name, sales, units, image }) {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-4">
       <img
         src={image || "/placeholder.svg?height=60&width=60"}
         alt={name}
-        className="h-12 w-12 object-cover rounded-lg border border-gray-200"
+        className="h-16 w-16 object-cover rounded-lg border border-gray-200"
       />
       <div className="flex-1">
-        <h4 className="text-sm font-medium text-gray-900">{name}</h4>
-        <p className="text-xs text-gray-500">{units} sold</p>
+        <h4 className="text-base font-medium text-gray-900">{name}</h4>
+        <p className="text-sm text-gray-500">{units} sold</p>
       </div>
       <div className="text-right">
-        <p className="text-sm font-bold text-gray-900">{sales}</p>
+        <p className="text-base font-bold text-gray-900">{sales}</p>
       </div>
     </div>
-  )
+  );
 }
